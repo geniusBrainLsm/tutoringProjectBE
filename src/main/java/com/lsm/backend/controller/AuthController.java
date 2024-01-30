@@ -17,7 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -26,6 +28,8 @@ import java.net.URI;
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
@@ -66,17 +70,49 @@ public class AuthController {
         return ResponseEntity.created(location)
                 .body(new ApiResponse(true, "User registered successfully@"));
     }
-//    @GetMapping("/user/me")
-//    public ResponseEntity<User> getCurrentUser(HttpServletRequest request) {
-//        String token = request.getHeader("Authorization").substring(7);
-//        if(!tokenProvider.validateToken(token)) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//        }
-//
-//        //성공시 사용자정보 반환
-//        Authentication auth = tokenProvider.getAuthentication(token);
-//        User user = (User) auth.getPrincipal();
-//
-//        return ResponseEntity.ok(user);
-//    }
+    @PostMapping("/local/login")
+    public  ResponseEntity<?> loginLocalUser(@Valid @RequestBody LoginRequest loginRequest){
+        try {
+            String email = loginRequest.getEmail();
+            String password = loginRequest.getPassword();
+
+            Authentication authentication = new UsernamePasswordAuthenticationToken(email, password);
+            //인증처리
+            Authentication authenticate = authenticationManager.authenticate(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authenticate);
+
+            String token = tokenProvider.createToken(authenticate);
+
+            return ResponseEntity.ok(new AuthResponse(token));
+        } catch (AuthenticationException e) {
+            // 인증실패
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        } catch (Exception e) {
+            // 나머지
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/signup")
+    public ResponseEntity<?> localRegisterUser(@Valid @RequestBody SignUpRequest signupRequest) {
+
+        // 비즈니스 로직
+        String name = signupRequest.getName();
+        String email = signupRequest.getEmail();
+        String password = signupRequest.getPassword();
+
+        User user = new User();
+        user.setName(name);
+        user.setEmail(email);
+        // 비밀번호 암호화
+        user.setPassword(bCryptPasswordEncoder.encode(password));
+
+        userRepository.save(user);
+
+        return ResponseEntity.ok("User registered successfully!");
+
+    }
+
+
 }
