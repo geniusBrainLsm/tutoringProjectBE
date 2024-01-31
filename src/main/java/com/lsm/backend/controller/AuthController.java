@@ -61,12 +61,17 @@ public class AuthController {
         user.setAuthProvider(AuthProvider.local);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User result = userRepository.save(user);
-        //회원가입 성공시 user/me
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/user/me")
-                .buildAndExpand(result.getId()).toUri();
-        return ResponseEntity.created(location)
-                .body(new ApiResponse(true, "User registered successfully@"));
+//        //회원가입 성공시 user/me
+//        URI location = ServletUriComponentsBuilder
+//                .fromCurrentContextPath().path("/user/me")
+//                .buildAndExpand(result.getId()).toUri();
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(signUpRequest.getEmail(), signUpRequest.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = tokenProvider.createToken(authentication);
+
+        return ResponseEntity.ok(new AuthResponse(token));
     }
     @PostMapping("/local/login")
     public  ResponseEntity<?> loginLocalUser(@Valid @RequestBody LoginRequest loginRequest){
@@ -103,12 +108,17 @@ public class AuthController {
         User user = new User();
         user.setName(name);
         user.setEmail(email);
-        // 비밀번호 암호화
+        // 비밀번호 인코딩
         user.setPassword(passwordEncoder.encode(password));
 
         userRepository.save(user);
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(email, password));
 
-        return ResponseEntity.ok("User registered successfully!");
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = tokenProvider.createToken(authentication);
+
+        return ResponseEntity.ok(new AuthResponse(token));
 
     }
 
