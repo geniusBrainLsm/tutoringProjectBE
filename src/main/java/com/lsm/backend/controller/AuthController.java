@@ -29,13 +29,11 @@ import java.net.URI;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
     @Autowired
     private TokenProvider tokenProvider;
     @PostMapping("/login")
@@ -94,7 +92,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/local/signup")
     public ResponseEntity<?> localRegisterUser(@Valid @RequestBody SignUpRequest signupRequest) {
 
         // 비즈니스 로직
@@ -106,7 +104,7 @@ public class AuthController {
         user.setName(name);
         user.setEmail(email);
         // 비밀번호 암호화
-        user.setPassword(bCryptPasswordEncoder.encode(password));
+        user.setPassword(passwordEncoder.encode(password));
 
         userRepository.save(user);
 
