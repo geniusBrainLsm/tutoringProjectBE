@@ -80,6 +80,8 @@ public class SecurityConfig {
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/",
+                                        "/singIn",
+                                        "/signUp",
                                         "/login/**",
                                         "/login/**",
                                         "/error",

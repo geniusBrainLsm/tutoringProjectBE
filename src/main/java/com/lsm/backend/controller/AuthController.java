@@ -11,6 +11,7 @@ import com.lsm.backend.security.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,53 +26,54 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-@RestController
-@RequestMapping("/api/v1/auth")
+@RestController  //Controller처럼 동작하면서 return값을 response body에 입력가능
+@RequiredArgsConstructor // Lombok에서 @AutoWired 대체하는 어노테이션
 public class AuthController {
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private TokenProvider tokenProvider;
-    @PostMapping("/login")
+
+    private final PasswordEncoder passwordEncoder;
+
+    private final AuthenticationManager authenticationManager;
+
+    private final UserRepository userRepository;
+
+    private final TokenProvider tokenProvider;
+    //@Valid는 LoginRequest 객체 검증
+    @PostMapping("/signIn")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
+                //UsernamePsswordAuthenticationToken -> 스프링 시큐리티 클래스. 아이디와 비밀번호를 저장하는 토큰을 만들고,
+                //AuthenticationManager에 전달해 인증.
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getEmail(),
                         loginRequest.getPassword()
                 )
         );
+        //그다음에 데이터베이스에서 대조한다음, 성공 시 Authentication 객체 반환. 그리고 SecurityContextHolder에 저장.
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = tokenProvider.createToken(authentication);
         return ResponseEntity.ok(new AuthResponse(token));
     }
-    @PostMapping("/signup")
+    @PostMapping("/signUp")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
+
         if(userRepository.existsByEmail(signUpRequest.getEmail())) {
             throw new BadRequestException("Email address already in use.");
         }
+
         // Creating user's account
         User user = new User();
         user.setName(signUpRequest.getName());
         user.setEmail(signUpRequest.getEmail());
         user.setPassword(signUpRequest.getPassword());
         user.setAuthProvider(AuthProvider.local);
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        User result = userRepository.save(user);
-//        //회원가입 성공시 user/me
-//        URI location = ServletUriComponentsBuilder
-//                .fromCurrentContextPath().path("/user/me")
-//                .buildAndExpand(result.getId()).toUri();
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(signUpRequest.getEmail(), signUpRequest.getPassword()));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = tokenProvider.createToken(authentication);
+        userRepository.save(user);
 
-        return ResponseEntity.ok(new AuthResponse(token));
+        // 회원 가입 성공 API 리턴
+        return ResponseEntity.ok(new ApiResponse(true, "User registered successfully"));
+
     }
     @PostMapping("/local/login")
     public  ResponseEntity<?> loginLocalUser(@Valid @RequestBody LoginRequest loginRequest){
@@ -97,7 +99,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/local/signup")
+    @PostMapping("/local/signUp")
     public ResponseEntity<?> localRegisterUser(@Valid @RequestBody SignUpRequest signupRequest) {
 
         // 비즈니스 로직
