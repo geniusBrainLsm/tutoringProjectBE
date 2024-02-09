@@ -5,8 +5,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.util.ArrayList;
 import java.util.List;
 
-@ConfigurationProperties(prefix = "app")
+@ConfigurationProperties(prefix = "app") //application.뭐시기 읽어옴
 public class AppProperties {
+    //auth는 jwt 설정값, oauth2는 oauth2 담을거
     private final Auth auth = new Auth();
     private final OAuth2 oauth2 = new OAuth2();
     public static class Auth {
