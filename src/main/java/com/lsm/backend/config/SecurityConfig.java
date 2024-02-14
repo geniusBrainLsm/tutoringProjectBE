@@ -25,6 +25,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -80,9 +82,11 @@ public class SecurityConfig {
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/",
-                                        "/singIn",
+                                        "/local/redirect",
+                                        "/rooms",
+                                        "/signIn",
+                                        "/signIn/**",
                                         "/signUp",
-                                        "/login/**",
                                         "/login/**",
                                         "/error",
                                         "/favicon.ico",
@@ -134,4 +138,10 @@ public class SecurityConfig {
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
     }
+
+    @Bean
+    public RedirectStrategy redirectStrategy() {
+        return new DefaultRedirectStrategy();
+    }
+
 }

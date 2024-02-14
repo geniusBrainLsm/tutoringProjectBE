@@ -8,7 +8,13 @@ import com.lsm.backend.payload.LoginRequest;
 import com.lsm.backend.payload.SignUpRequest;
 import com.lsm.backend.repository.UserRepository;
 import com.lsm.backend.security.TokenProvider;
+import com.lsm.backend.security.UserPrincipal;
+import com.lsm.backend.security.oauth2.OAuth2AuthenticationSuccessHandler;
+import com.lsm.backend.util.AuthenticationSuccessHandlerUtil;
+import com.lsm.backend.util.JwtTokenUtil;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
@@ -22,14 +28,17 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.IOException;
 import java.net.URI;
 @RestController  //Controller처럼 동작하면서 return값을 response body에 입력가능
 @RequiredArgsConstructor // Lombok에서 @AutoWired 대체하는 어노테이션
 public class AuthController {
-
+    private final RedirectStrategy redirectStrategy;
     private final PasswordEncoder passwordEncoder;
 
     private final AuthenticationManager authenticationManager;
@@ -37,19 +46,37 @@ public class AuthController {
     private final UserRepository userRepository;
 
     private final TokenProvider tokenProvider;
+    private final JwtTokenUtil jwtTokenUtil;
+    private final AuthenticationSuccessHandlerUtil successHandler;
     //@Valid는 LoginRequest 객체 검증
+
+    private String determineRedirectUrl(HttpServletRequest request, Authentication authentication) {
+
+        String redirectUrl = "http://localhost:3000/local/redirect";
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(redirectUrl);
+
+        Long userId = ((UserPrincipal)authentication.getPrincipal()).getId();
+
+        String token = jwtTokenUtil.generateToken(userId);
+
+        builder.queryParam("token", token);
+
+        return builder.toUriString();
+    }
+
     @PostMapping("/signIn")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+
         Authentication authentication = authenticationManager.authenticate(
-                //UsernamePsswordAuthenticationToken -> 스프링 시큐리티 클래스. 아이디와 비밀번호를 저장하는 토큰을 만들고,
-                //AuthenticationManager에 전달해 인증.
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getEmail(),
                         loginRequest.getPassword()
                 )
         );
-        //그다음에 데이터베이스에서 대조한다음, 성공 시 Authentication 객체 반환. 그리고 SecurityContextHolder에 저장.
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
         String token = tokenProvider.createToken(authentication);
         return ResponseEntity.ok(new AuthResponse(token));
     }
@@ -75,54 +102,4 @@ public class AuthController {
         return ResponseEntity.ok(new ApiResponse(true, "User registered successfully"));
 
     }
-    @PostMapping("/local/login")
-    public  ResponseEntity<?> loginLocalUser(@Valid @RequestBody LoginRequest loginRequest){
-        try {
-            String email = loginRequest.getEmail();
-            String password = loginRequest.getPassword();
-
-            Authentication authentication = new UsernamePasswordAuthenticationToken(email, password);
-            //인증처리
-            Authentication authenticate = authenticationManager.authenticate(authentication);
-            SecurityContextHolder.getContext().setAuthentication(authenticate);
-
-            String token = tokenProvider.createToken(authenticate);
-
-            return ResponseEntity.ok(new AuthResponse(token));
-        } catch (AuthenticationException e) {
-            // 인증실패
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-
-        } catch (Exception e) {
-            // 나머지
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    @PostMapping("/local/signUp")
-    public ResponseEntity<?> localRegisterUser(@Valid @RequestBody SignUpRequest signupRequest) {
-
-        // 비즈니스 로직
-        String name = signupRequest.getName();
-        String email = signupRequest.getEmail();
-        String password = signupRequest.getPassword();
-
-        User user = new User();
-        user.setName(name);
-        user.setEmail(email);
-        // 비밀번호 인코딩
-        user.setPassword(passwordEncoder.encode(password));
-
-        userRepository.save(user);
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(email, password));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = tokenProvider.createToken(authentication);
-
-        return ResponseEntity.ok(new AuthResponse(token));
-
-    }
-
-
 }

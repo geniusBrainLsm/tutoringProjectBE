@@ -1,22 +1,18 @@
-package com.lsm.backend.security.oauth2;
+package com.lsm.backend.util;
 
 import com.lsm.backend.config.AppProperties;
 import com.lsm.backend.exception.BadRequestException;
-import com.lsm.backend.model.User;
 import com.lsm.backend.security.UserPrincipal;
-import com.lsm.backend.util.CookieUtils;
-import com.lsm.backend.util.JwtTokenUtil;
+import com.lsm.backend.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
@@ -24,8 +20,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
-
+public class AuthenticationSuccessHandlerUtil extends SavedRequestAwareAuthenticationSuccessHandler {
     private final JwtTokenUtil jwtTokenUtil;
 
 
@@ -40,7 +35,7 @@ public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthent
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         //String targetUrl = determineTargetUrl(request, response, authentication);
         //String targetUrl = "http://localhost:3000/";
-        String Uri = "http://localhost:3000/oauth2/redirect";
+        String Uri = "http://localhost:3000/signIn";
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(Uri);
         Long userId = ((UserPrincipal)authentication.getPrincipal()).getId();
 
