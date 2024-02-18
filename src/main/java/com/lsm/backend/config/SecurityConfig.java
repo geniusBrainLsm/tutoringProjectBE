@@ -83,6 +83,7 @@ public class SecurityConfig {
                         authorizeRequests
                                 .requestMatchers("/",
                                         "/local/redirect",
+                                        "/chat",
                                         "/rooms",
                                         "/signIn",
                                         "/signIn/**",
