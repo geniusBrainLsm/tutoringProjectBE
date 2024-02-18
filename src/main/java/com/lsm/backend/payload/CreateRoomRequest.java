@@ -10,8 +10,8 @@ import lombok.Setter;
 @Setter
 public class CreateRoomRequest {
     @NotBlank
-    private String roomName;
+    private String title;
     @NotNull
-    private int roomMaxUsers;
+    private int MaxUsers;
 }
 
