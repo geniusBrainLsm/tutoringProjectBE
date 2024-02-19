@@ -21,7 +21,7 @@ public class TokenProvider {
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
-        // 사용자의 숫자 ID를 가져와서 토큰에 담습니다.
+        // 사용자의 ID를 가져와서 토큰에담는다.
         Long userId = userPrincipal.getId();
 
         return Jwts.builder()
