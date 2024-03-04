@@ -6,8 +6,13 @@ import com.lsm.backend.security.oauth2.CustomOAuth2UserService;
 import com.lsm.backend.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.lsm.backend.security.oauth2.OAuth2AuthenticationFailureHandler;
 import com.lsm.backend.security.oauth2.OAuth2AuthenticationSuccessHandler;
+import com.lsm.backend.service.MessagingService;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Primary;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -32,6 +37,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import javax.crypto.SecretKey;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -44,6 +50,8 @@ import java.util.Collections;
         prePostEnabled = true
 )
 public class SecurityConfig {
+
+
 
     private final CustomUserDetailsService customUserDetailsService;
 
@@ -84,6 +92,7 @@ public class SecurityConfig {
                                 .requestMatchers("/",
                                         "/local/redirect",
                                         "/chat",
+                                        "/chat/**",
                                         "/rooms",
                                         "/signIn",
                                         "/signIn/**",
@@ -139,7 +148,10 @@ public class SecurityConfig {
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
     }
-
+    @Bean
+    public SecretKey secretKey() {
+        return Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    }
     @Bean
     public RedirectStrategy redirectStrategy() {
         return new DefaultRedirectStrategy();
