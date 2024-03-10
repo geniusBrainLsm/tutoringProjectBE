@@ -6,7 +6,7 @@ import com.lsm.backend.security.oauth2.CustomOAuth2UserService;
 import com.lsm.backend.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.lsm.backend.security.oauth2.OAuth2AuthenticationFailureHandler;
 import com.lsm.backend.security.oauth2.OAuth2AuthenticationSuccessHandler;
-import com.lsm.backend.service.MessagingService;
+
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -91,6 +91,8 @@ public class SecurityConfig {
                         authorizeRequests
                                 .requestMatchers("/",
                                         "/local/redirect",
+                                        "/ws/**",
+                                        "/api/**",
                                         "/chat",
                                         "/chat/**",
                                         "/rooms",
