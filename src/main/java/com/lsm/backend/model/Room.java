@@ -3,38 +3,28 @@ package com.lsm.backend.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.antlr.v4.runtime.misc.NotNull;
+import org.springframework.messaging.Message;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Entity
+@Table(name="room")
 @Getter
 @Setter
+
 public class Room {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name="title")
     private String title;
 
+    @Column(name="owner", nullable = true)
     private String owner;
 
-    private int currentCount;
+    @Column(name="created_date",nullable = true)
+    private LocalDateTime createdDate;
 
-    private int maxUsers;
-
-    @OneToMany(mappedBy="room")
-    private List<Message> messages;
-
-    @OneToMany
-    @JoinColumn(name="room_id")
-    private List<User> users;
-    public void addUser(User user) {
-        users.add(user);
-    }
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 }
