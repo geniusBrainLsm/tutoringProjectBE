@@ -1,6 +1,6 @@
 package com.lsm.backend.controller;
 
-import com.lsm.backend.payload.Coordinates;
+import com.lsm.backend.model.Coordinates;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;

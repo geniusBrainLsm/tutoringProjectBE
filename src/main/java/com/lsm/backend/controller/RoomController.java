@@ -1,7 +1,8 @@
 package com.lsm.backend.controller;
 
 import com.lsm.backend.exception.ResourceNotFoundException;
-import com.lsm.backend.model.Drawing;
+
+import com.lsm.backend.model.Drawings;
 import com.lsm.backend.model.Room;
 import com.lsm.backend.repository.RoomRepository;
 import com.lsm.backend.security.TokenProvider;
@@ -55,15 +56,19 @@ public class RoomController {
         return ResponseEntity.ok().build();
     }
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-    @PostMapping("/{roomId}/save-drawing")
-    public ResponseEntity<String> saveDrawing(@PathVariable Long roomId, @RequestBody Drawing drawing){
-        log.info("Save drawing - Room ID: {}, Drawing: {}", roomId, drawing);
+    @PostMapping("/{roomId}/save-drawings")
+    public ResponseEntity<String> saveDrawing(@PathVariable Long roomId, @RequestBody Drawings drawings){
+        log.info("Save drawing - Room ID: {}, Drawing: {}", roomId, drawings);
 
         Optional<Room> roomOptional = roomService.getRoom(roomId);
         if (roomOptional.isPresent()) {
             Room room = roomOptional.get();
-            room.getDrawings().add(drawing);
+
+
+            room.getDrawings().add(drawings);
+
             roomService.update(room);
+
             log.info("Drawing added and room updated");
 
             return ResponseEntity.ok("Drawing saved successfully!");
@@ -73,11 +78,11 @@ public class RoomController {
     }
 
     @GetMapping("/{roomId}/get-drawings")
-    public ResponseEntity<List<Drawing>> getDrawings(@PathVariable Long roomId) {
+    public ResponseEntity<List<Drawings>> getDrawings(@PathVariable Long roomId) {
         Optional<Room> roomOptional = roomService.getRoom(roomId);
         if (roomOptional.isPresent()) {
             Room room = roomOptional.get();
-            log.info("asd");
+            log.info("Drawing List: {}", room.getDrawings().toString());
             return ResponseEntity.ok(room.getDrawings());
 
 
