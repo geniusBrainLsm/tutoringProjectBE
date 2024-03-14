@@ -3,6 +3,7 @@ package com.lsm.backend.service;
 
 import com.lsm.backend.model.Room;
 import com.lsm.backend.repository.RoomRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

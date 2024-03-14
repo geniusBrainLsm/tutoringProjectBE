@@ -1,14 +1,16 @@
 package com.lsm.backend.model;
 
-import com.lsm.backend.payload.Coordinates;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
-public class Drawing {
+public class Drawings {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,6 +18,6 @@ public class Drawing {
     @ManyToOne
     @JoinColumn(name = "room_id")
     private Room room;
-    @Transient
-    private List<Coordinates> line;
+    @OneToMany(mappedBy="drawings", cascade = CascadeType.ALL)
+    List<Coordinates> coordinates;
 }

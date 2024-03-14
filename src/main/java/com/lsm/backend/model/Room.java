@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.messaging.Message;
-import com.lsm.backend.model.Drawing;
+import com.lsm.backend.model.Drawings;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -26,7 +26,7 @@ public class Room {
     private String owner;
 
     @OneToMany(mappedBy = "room")
-    private List<Drawing> drawings;
+    private List<Drawings> drawings;
 
     @Column(name="created_date",nullable = true)
     private LocalDateTime createdDate;
