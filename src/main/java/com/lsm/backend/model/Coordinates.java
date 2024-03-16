@@ -1,5 +1,6 @@
 package com.lsm.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lsm.backend.model.Drawings;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -18,7 +19,9 @@ public class Coordinates {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="drawing_id")
+    @JoinColumn(name="drawings_id")
+    @JsonIgnore
+
     private Drawings drawings;
 
     private Long x0;
