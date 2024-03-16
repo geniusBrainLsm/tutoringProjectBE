@@ -4,7 +4,9 @@ import com.lsm.backend.exception.ResourceNotFoundException;
 
 import com.lsm.backend.model.Drawings;
 import com.lsm.backend.model.Room;
+import com.lsm.backend.model.User;
 import com.lsm.backend.repository.RoomRepository;
+import com.lsm.backend.repository.UserRepository;
 import com.lsm.backend.security.TokenProvider;
 import com.lsm.backend.service.RoomServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -27,6 +30,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RoomController {
     private final RoomServiceImpl roomService;
+    private final UserRepository userRepository;
 
 
 
@@ -35,6 +39,8 @@ public class RoomController {
         roomService.save(room);
         return ResponseEntity.ok(room);
     }
+
+
     @GetMapping
     public List<Room> getAllRooms(){
         return roomService.getAllRooms();

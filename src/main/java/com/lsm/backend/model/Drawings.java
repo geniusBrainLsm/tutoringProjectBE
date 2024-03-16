@@ -1,5 +1,6 @@
 package com.lsm.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -17,7 +18,9 @@ public class Drawings {
 
     @ManyToOne
     @JoinColumn(name = "room_id")
+    @JsonIgnore//순환참조방지
     private Room room;
+
     @OneToMany(mappedBy="drawings", cascade = CascadeType.ALL)
     List<Coordinates> coordinates;
 }
