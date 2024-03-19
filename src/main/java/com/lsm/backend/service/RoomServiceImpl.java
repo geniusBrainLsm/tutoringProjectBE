@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class RoomServiceImpl implements RoomService {
@@ -17,7 +16,6 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public Room save(Room room){
         return roomRepository.save(room);
-
     }
 
     @Override
