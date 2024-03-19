@@ -1,6 +1,7 @@
 package com.lsm.backend.service;
 
 import com.lsm.backend.model.Room;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
