@@ -36,5 +36,15 @@ public class BoardDTO {
 
         return board;
     }
-
+    public static BoardDTO fromEntity(Board board) {
+        BoardDTO boardDTO = new BoardDTO();
+        boardDTO.setBoardType(board.getBoardType());
+        boardDTO.setTitle(board.getTitle());
+        boardDTO.setWriter(board.getWriter());
+        boardDTO.setLikeCount(board.getLikeCount());
+        boardDTO.setViewCounter(board.getViewCounter());
+        boardDTO.setCreatedAt(board.getCreatedAt());
+        boardDTO.setModifiedAt(board.getModifiedAt());
+        return boardDTO;
+    }
 }

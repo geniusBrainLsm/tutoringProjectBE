@@ -12,17 +12,9 @@ import java.util.Optional;
 
 
 public interface BoardService {
-
-    Board createPost(BoardDTO boardDTO);
-
-    Board editPost(BoardDTO boardDTO);
-
-    Optional<Board> getPost(Long id);
-
-    List<Board> getAllPost();
-
+    BoardDTO createPost(BoardDTO boardDTO);
+    BoardDTO editPost(BoardDTO boardDTO);
+    Optional<BoardDTO> getPost(Long id);
+    List<BoardDTO> getAllPost();
     void deletePost(Long id);
-
-
-
 }

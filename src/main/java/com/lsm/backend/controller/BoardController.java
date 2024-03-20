@@ -19,11 +19,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BoardController {
     private final BoardServiceImpl boardService;
-    public ResponseEntity<?> addPost(@RequestBody BoardDTO boardDTO){
-        boardService.createPost(boardDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).build(); // HTTP 상태 코드 직접 지정
-
-        //별도의 body없을시 build()
+    public ResponseEntity<?> createPost(@RequestBody BoardDTO boardDTO){
+        BoardDTO createdDTO = boardService.createPost(boardDTO);
+        return ResponseEntity.status(201).body(createdDTO);
     }
 
     public ResponseEntity<?> deletePost(@PathVariable Long id){
@@ -32,7 +30,7 @@ public class BoardController {
     }
 
     public ResponseEntity<?> getPost(@PathVariable Long id) {
-        Optional<Board> board = boardService.getPost(id);
+        Optional<BoardDTO> board = boardService.getPost(id);
 
         if(board.isPresent()) {
             return new ResponseEntity<>(board.get(), HttpStatus.OK);
@@ -41,8 +39,13 @@ public class BoardController {
         }
     }
 
-    public ResponseEntity<List<Board>> getAllPost(){
-        List<Board> posts = boardService.getAllPost();
-        return new ResponseEntity<>(posts, HttpStatus.OK);
+    public ResponseEntity<List<BoardDTO>> getAllPost(){
+        List<BoardDTO> posts = boardService.getAllPost();
+        return ResponseEntity.ok(posts);
+    }
+
+    public ResponseEntity<?> editPost(@RequestBody BoardDTO boardDTO){
+        BoardDTO createdDTO = boardService.createPost(boardDTO);
+        return ResponseEntity.status(201).body(createdDTO);
     }
 }
