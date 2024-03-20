@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 @Service
@@ -14,26 +15,40 @@ import java.util.Optional;
 public class BoardServiceImpl implements BoardService{
     private final BoardRepository boardRepository;
     @Override
-    public Board createPost(BoardDTO boardDTO) {
-        Board board = boardDTO.toEntity();
-        return boardRepository.save(board);
+    public BoardDTO createPost(BoardDTO boardDTO) {
+        Board board = boardRepository.save(boardDTO.toEntity());
+        return BoardDTO.fromEntity(board);
     }
 
     @Override
-    public Board editPost(BoardDTO boardDTO) {
-        Board board = boardDTO.toEntity();
-        return boardRepository.save(board);
+    public BoardDTO editPost(BoardDTO boardDTO) {
+        Board board = boardRepository.save(boardDTO.toEntity());
+        return BoardDTO.fromEntity(board);
     }
 
     @Override
-    public Optional<Board> getPost(Long id) {
-        return boardRepository.findById(id); // Optional 반환
+    public Optional<BoardDTO> getPost(Long id) {
+        try{
+            Board board = boardRepository.findById(id)
+                    .orElseThrow(()-> new Exception("없어용"));
+
+            return Optional.of(BoardDTO.fromEntity(board));
+
+        } catch (Exception e){
+            return Optional.empty();
+        }
     }
 
     @Override
-    public List<Board> getAllPost() {
+    public List<BoardDTO> getAllPost() {
+        List<BoardDTO> boardDTOList = new ArrayList<>();
+        List<Board> boards = boardRepository.findAll();
 
-        return boardRepository.findAll();
+        for(Board board : boards){
+            BoardDTO boardDto = BoardDTO.fromEntity(board);
+            boardDTOList.add(boardDto);
+        }
+        return boardDTOList;
     }
 
     @Override
