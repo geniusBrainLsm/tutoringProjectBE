@@ -22,6 +22,8 @@ public class Board {
 
     private String writer;
 
+    private String contents;
+
     private Long likeCount;
 
     private Long viewCounter;

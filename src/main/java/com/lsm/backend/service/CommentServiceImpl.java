@@ -1,6 +1,7 @@
 package com.lsm.backend.service;
 
 import com.lsm.backend.exception.ResourceNotFoundException;
+import com.lsm.backend.model.Board;
 import com.lsm.backend.model.Comment;
 import com.lsm.backend.payload.BoardDTO;
 import com.lsm.backend.payload.CommentDTO;
@@ -14,7 +15,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class CommentServiceImpl implements CommentService{
+public class  CommentServiceImpl implements CommentService{
     private final CommentRepository commentRepository;
     @Override
     public CommentDTO createComment(CommentDTO commentDTO) {
@@ -23,8 +24,15 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public CommentDTO editComment(CommentDTO commentDTO) {
-        Comment comment = commentRepository.save(commentDTO.toEntity());
+    public CommentDTO updateComment(CommentDTO commentDTO) {
+
+        Comment comment = commentRepository.findById(commentDTO.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentDTO.getId()));
+
+        comment.setContent(commentDTO.getContent());
+
+        comment = commentRepository.save(comment);
+
         return CommentDTO.fromEntity(comment);
     }
 

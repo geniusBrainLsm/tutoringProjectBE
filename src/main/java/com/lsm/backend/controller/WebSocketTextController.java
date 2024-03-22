@@ -1,6 +1,5 @@
 package com.lsm.backend.controller;
 
-import com.lsm.backend.model.Coordinates;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -12,11 +11,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class WebSocketTextController {
 
-    final SimpMessagingTemplate messagingTemplate;
 
-    @MessageMapping("/send/{roomId}")
-    @SendTo("/topic/{roomId}")
-    public Coordinates sendMessage(@Payload Coordinates coordinates) {
-        return coordinates;
-    }
 }

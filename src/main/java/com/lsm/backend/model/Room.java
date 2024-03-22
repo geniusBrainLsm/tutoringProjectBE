@@ -3,8 +3,9 @@ package com.lsm.backend.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.messaging.Message;
-import com.lsm.backend.model.Drawings;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -25,9 +26,10 @@ public class Room {
     @Column(name="owner", nullable = true)
     private String owner;
 
-    @OneToMany(mappedBy = "room")
-    private List<Drawings> drawings;
+//    @OneToMany(mappedBy = "room")
+//    private List<Drawings> drawings;
 
+    @CreationTimestamp
     @Column(name="created_date",nullable = true)
     private LocalDateTime createdDate;
 

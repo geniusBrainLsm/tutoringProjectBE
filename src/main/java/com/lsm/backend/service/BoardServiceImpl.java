@@ -1,5 +1,6 @@
 package com.lsm.backend.service;
 
+import com.lsm.backend.exception.ResourceNotFoundException;
 import com.lsm.backend.model.Board;
 import com.lsm.backend.payload.BoardDTO;
 import com.lsm.backend.repository.BoardRepository;
@@ -21,10 +22,19 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
-    public BoardDTO editPost(BoardDTO boardDTO) {
-        Board board = boardRepository.save(boardDTO.toEntity());
+    public BoardDTO updatePost(BoardDTO boardDTO) {
+
+        Board board = boardRepository.findById(boardDTO.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Board", "id", boardDTO.getId()));
+
+        board.setTitle(boardDTO.getTitle());
+        board.setContents(boardDTO.getContents());
+
+        board = boardRepository.save(board);
+
         return BoardDTO.fromEntity(board);
     }
+
 
     @Override
     public Optional<BoardDTO> getPost(Long id) {
