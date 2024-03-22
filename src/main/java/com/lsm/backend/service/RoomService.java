@@ -1,20 +1,20 @@
 package com.lsm.backend.service;
 
 import com.lsm.backend.model.Room;
+import com.lsm.backend.payload.RoomDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface RoomService {
-    Room save(Room room);
+    RoomDTO createRoom(RoomDTO roomDTO);
 
-    Room update(Room room);
 
-    void deleteRoom(Long roomId);
+    void deleteRoom(Long id);
 
-    Optional<Room> getRoom(Long roomId);
+    Optional<RoomDTO> getRoom(Long id);
 
-    List<Room> getAllRooms();
+    List<RoomDTO> getAllRooms();
 
 }

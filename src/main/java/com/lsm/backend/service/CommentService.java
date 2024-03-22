@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface CommentService {
     CommentDTO createComment(CommentDTO commentDTO);
 
-    CommentDTO editComment(CommentDTO commentDTO);
+    CommentDTO updateComment(CommentDTO commentDTO);
 
     Optional<CommentDTO> getComment(Long id);
 
