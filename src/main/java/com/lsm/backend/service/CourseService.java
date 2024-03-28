@@ -11,7 +11,11 @@ public interface CourseService {
     CourseDTO createaCourse(CourseDTO courseDTO);
 
     Optional<CourseDTO> getCourse(Long id);
+    Page<CourseDTO> getAllCourses(Pageable pageable);
+    Optional<CourseDTO> getCourse(CourseDTO courseDTO);
+    void deleteCourse(Long id);
+    CourseDTO updateCourse(CourseDTO courseDTO);
 
-    Page<Course> getAllCourses(Pageable pageable);
+
 
 }
