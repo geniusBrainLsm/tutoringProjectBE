@@ -40,6 +40,5 @@ public class Comment {
 
     @Column(name = "modified_at")
     private LocalDateTime modifiedAt;
-
 }
 

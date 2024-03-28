@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Optional;
-
+//페이지네이션 해야됌
 
 public interface BoardService {
     BoardDTO createPost(BoardDTO boardDTO);

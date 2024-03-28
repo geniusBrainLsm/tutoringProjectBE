@@ -23,6 +23,7 @@ public class Board {
     private String writer;
 
     private String contents;
+    private String tag;
 
     private Long likeCount;
 

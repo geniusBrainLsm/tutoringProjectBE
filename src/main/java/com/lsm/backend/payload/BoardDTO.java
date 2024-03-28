@@ -19,6 +19,7 @@ public class BoardDTO {
     private String writer;
 
     private String contents;
+    private String tag;
 
     private Long likeCount;
 
@@ -35,6 +36,7 @@ public class BoardDTO {
         board.setTitle(this.title);
         board.setWriter(this.writer);
         board.setContents(this.contents);
+        board.setTag(this.tag);
         board.setLikeCount(this.likeCount);
         board.setViewCounter(this.viewCounter);
         board.setCreatedAt(this.createdAt);
@@ -49,6 +51,7 @@ public class BoardDTO {
         boardDTO.setTitle(board.getTitle());
         boardDTO.setWriter(board.getWriter());
         boardDTO.setContents(board.getContents());
+        boardDTO.setTag(board.getTag());
         boardDTO.setLikeCount(board.getLikeCount());
         boardDTO.setViewCounter(board.getViewCounter());
         boardDTO.setCreatedAt(board.getCreatedAt());
