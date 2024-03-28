@@ -32,7 +32,7 @@ public class BackendApplication {
                 board.setWriter("Writer " + i);
                 board.setContents("샘플내용샘플내용" + i);
                 board.setTag("Tag" + i);
-                board.setLikeCount(Long.valueOf(i * 10));
+                board.setLikeCount(Long.valueOf(i ));
                 board.setViewCounter(Long.valueOf(i * 5));
                 board.setCreatedAt(LocalDateTime.now());
                 board.setModifiedAt(LocalDateTime.now());
@@ -45,7 +45,7 @@ public class BackendApplication {
                 board.setWriter("Writer " + i);
                 board.setContents("샘플내용샘플내용" + i);
                 board.setTag("Tag" + i);
-                board.setLikeCount(Long.valueOf(i * 10));
+                board.setLikeCount(Long.valueOf(i ));
                 board.setViewCounter(Long.valueOf(i * 5));
                 board.setCreatedAt(LocalDateTime.now());
                 board.setModifiedAt(LocalDateTime.now());
@@ -58,7 +58,7 @@ public class BackendApplication {
                 board.setWriter("Writer " + i);
                 board.setContents("샘플내용샘플내용 " + i);
                 board.setTag("Tag" + i);
-                board.setLikeCount(Long.valueOf(i * 10));
+                board.setLikeCount(Long.valueOf(i ));
                 board.setViewCounter(Long.valueOf(i * 5));
                 board.setCreatedAt(LocalDateTime.now());
                 board.setModifiedAt(LocalDateTime.now());
