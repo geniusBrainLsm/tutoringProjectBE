@@ -17,14 +17,14 @@ public class ChatController {
     private SimpMessageSendingOperations messagingTemplate;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @MessageMapping("/app/chat")
+    @MessageMapping("/chat")
     @SendTo("/topic/public")
     public ChatMessageDTO sendChat(@Payload ChatMessageDTO chatMessageDTO) {
         logger.info("chat");
         return chatMessageDTO;
     }
 
-    @MessageMapping("/app/draw")
+    @MessageMapping("/draw")
     @SendTo("/topic/public")
     public DrawMessageDTO sendDraw(@Payload DrawMessageDTO drawMessageDTO) {
         logger.info("draw");
