@@ -8,8 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CurriculumService {
-    CurriculumDTO createCurriculum(List<CurriculumDTO> curriculumDTOs, Long courseId);
-
+    List<CurriculumDTO> createCurriculum(List<CurriculumDTO> curriculumDTOS, Long courseId);
     CurriculumDTO updateCurriculum(CurriculumDTO curriculumDTO);
 
     List<CurriculumDTO> getAllCurriculum();
