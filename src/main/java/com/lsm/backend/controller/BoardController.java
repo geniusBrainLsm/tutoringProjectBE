@@ -44,7 +44,7 @@ public class BoardController {
         return ResponseEntity.ok(posts);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<?> editPost(@PathVariable Long id, @RequestBody BoardDTO boardDTO, @RequestBody List<TagDTO> tagDTOS){
+    public ResponseEntity<?> editPost(@PathVariable Long id, @RequestBody BoardDTO boardDTO, @RequestBody TagDTO tagDTOS){
         BoardDTO createdDTO = boardService.updatePost(boardDTO, tagDTOS);
         return ResponseEntity.status(201).body(createdDTO);
     }
