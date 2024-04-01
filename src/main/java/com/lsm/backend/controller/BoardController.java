@@ -2,6 +2,7 @@ package com.lsm.backend.controller;
 
 import com.lsm.backend.model.Board;
 import com.lsm.backend.payload.BoardDTO;
+import com.lsm.backend.payload.TagDTO;
 import com.lsm.backend.service.BoardServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,8 +19,8 @@ import java.util.Optional;
 public class BoardController {
     private final BoardServiceImpl boardService;
     @PostMapping
-    public ResponseEntity<?> createPost(@RequestBody BoardDTO boardDTO){
-        BoardDTO createdDTO = boardService.createPost(boardDTO);
+    public ResponseEntity<?> createPost(@RequestBody BoardDTO boardDTO, TagDTO tagDTOS){
+        BoardDTO createdDTO = boardService.createPost(boardDTO, tagDTOS);
         return ResponseEntity.status(201).body(createdDTO);
     }
     @DeleteMapping("/{id}")
@@ -43,8 +44,8 @@ public class BoardController {
         return ResponseEntity.ok(posts);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<?> editPost(@PathVariable Long id, @RequestBody BoardDTO boardDTO){
-        BoardDTO createdDTO = boardService.updatePost(boardDTO);
+    public ResponseEntity<?> editPost(@PathVariable Long id, @RequestBody BoardDTO boardDTO, @RequestBody List<TagDTO> tagDTOS){
+        BoardDTO createdDTO = boardService.updatePost(boardDTO, tagDTOS);
         return ResponseEntity.status(201).body(createdDTO);
     }
 }

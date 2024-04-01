@@ -2,11 +2,14 @@ package com.lsm.backend.service;
 
 import com.lsm.backend.exception.ResourceNotFoundException;
 import com.lsm.backend.model.Course;
+import com.lsm.backend.model.CourseUpdateHistory;
 import com.lsm.backend.model.Curriculum;
 import com.lsm.backend.payload.BoardDTO;
 import com.lsm.backend.payload.CourseDTO;
+import com.lsm.backend.payload.CourseUpdateHistoryDTO;
 import com.lsm.backend.payload.CurriculumDTO;
 import com.lsm.backend.repository.CourseRepository;
+
 import com.lsm.backend.repository.CurriculumRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,6 +19,8 @@ import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class CourseServiceImpl implements CourseService{
@@ -72,17 +77,29 @@ public class CourseServiceImpl implements CourseService{
     @Override
     public CourseDTO updateCourse(CourseDTO courseDTO) {
         Course course = courseRepository.findById(courseDTO.getId())
-                .orElseThrow(()->new ResourceNotFoundException("Course","asd",courseDTO.getId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "id", courseDTO.getId()));
 
         course.setTitle(courseDTO.getTitle());
         course.setDescription(courseDTO.getDescription());
-        course.setThumbnailUrl(courseDTO.getTitle());
+        course.setThumbnailUrl(courseDTO.getThumbnailUrl());
         course.setInstructorName(courseDTO.getInstructorName());
 
-        course.setCurricula(courseDTO.getCurricula());
-        course.setUpdateHistories(courseDTO.getUpdateHistories());
+        // CourseDTO의 curricula를 Course 엔티티의 타입으로 변환하여 설정
+        List<Curriculum> curriculaEntities = new ArrayList<>();
+        for (CurriculumDTO curriculumDTO : courseDTO.getCurricula()) {
+            curriculaEntities.add(curriculumDTO.toEntity());
+        }
+        course.setCurricula(curriculaEntities);
+
+        // CourseDTO의 updateHistories를 Course 엔티티의 타입으로 변환하여 설정
+        List<CourseUpdateHistory> updateHistoryEntities = new ArrayList<>();
+        for (CourseUpdateHistoryDTO updateHistoryDTO : courseDTO.getUpdateHistories()) {
+            updateHistoryEntities.add(updateHistoryDTO.toEntity());
+        }
+        course.setUpdateHistories(updateHistoryEntities);
 
         course = courseRepository.save(course);
         return CourseDTO.fromEntity(course);
     }
+
 }

@@ -23,7 +23,9 @@ public class Board {
     private String writer;
 
     private String contents;
-    private String tag;
+    @ManyToMany
+    @JoinColumn(name = "board_id")
+    private List<Tag> tag;
 
     private Long likeCount;
 
@@ -33,9 +35,18 @@ public class Board {
     private List<Comment> comments;
 
     @Column(name = "created_at")
+
     private LocalDateTime createdAt;
 
     @Column(name = "modified_at")
     private LocalDateTime modifiedAt;
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 
+    @PreUpdate
+    protected void onUpdate() {
+        this.modifiedAt = LocalDateTime.now();
+    }
 }
