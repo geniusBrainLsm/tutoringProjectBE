@@ -2,15 +2,13 @@ package com.lsm.backend.payload;
 
 import com.lsm.backend.model.Tag;
 import jakarta.persistence.Column;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Builder
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class TagDTO {
     private Long id;
 

@@ -12,7 +12,8 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class BoardDTO {
 

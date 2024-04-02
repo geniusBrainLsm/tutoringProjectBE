@@ -7,7 +7,8 @@ import lombok.*;
 @Getter
 @Builder
 @Setter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

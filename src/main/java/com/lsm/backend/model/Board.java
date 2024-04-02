@@ -9,7 +9,8 @@ import java.util.List;
 @Entity
 @Builder
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @Setter
 @Table(name="board")
 public class Board {
