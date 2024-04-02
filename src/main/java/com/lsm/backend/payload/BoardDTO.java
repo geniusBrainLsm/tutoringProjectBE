@@ -3,15 +3,17 @@ package com.lsm.backend.payload;
 import com.lsm.backend.model.Board;
 import com.lsm.backend.model.Tag;
 import jakarta.persistence.Column;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
 @Setter
+@RequiredArgsConstructor
+@Builder
 public class BoardDTO {
 
     private Long id;
@@ -24,7 +26,7 @@ public class BoardDTO {
 
     private String contents;
 
-    private List<Tag> tag;
+    private List<TagDTO> tag;
 
     private Long likeCount;
 
@@ -37,17 +39,24 @@ public class BoardDTO {
     private LocalDateTime modifiedAt;
 
     public Board toEntity() {
-        Board board = new Board();
-        board.setBoardType(this.boardType);
-        board.setTitle(this.title);
-        board.setWriter(this.writer);
-        board.setContents(this.contents);
-        board.setTag(this.tag);
-        board.setLikeCount(this.likeCount);
-        board.setViewCounter(this.viewCounter);
-        board.setCreatedAt(this.createdAt);
-        board.setModifiedAt(this.modifiedAt);
+        Board board = Board.builder()
+                .title(title)
+                .writer(writer)
+                .boardType(boardType)
+                .contents(contents)
+                .likeCount(likeCount)
+                .viewCounter(viewCounter)
+                .build();
 
+        List<Tag> tagEntities = new ArrayList<>();
+        for(TagDTO tagDTO : tag){
+            Tag tag = Tag.builder()
+                    .contents(tagDTO.getContents())
+                    .build();
+            tagEntities.add(tag);
+        }
+
+        board.setTag(tagEntities);
         return board;
     }
 
@@ -58,11 +67,17 @@ public class BoardDTO {
         boardDTO.setTitle(board.getTitle());
         boardDTO.setWriter(board.getWriter());
         boardDTO.setContents(board.getContents());
-        boardDTO.setTag(board.getTag());
         boardDTO.setLikeCount(board.getLikeCount());
         boardDTO.setViewCounter(board.getViewCounter());
         boardDTO.setCreatedAt(board.getCreatedAt());
         boardDTO.setModifiedAt(board.getModifiedAt());
+
+        List<TagDTO> tagDTOS = board.getTag().stream()
+                .map(tag->TagDTO.builder()
+                        .contents(tag.getContents())
+                        .build())
+                .collect(Collectors.toList());
+        boardDTO.setTag(tagDTOS);
 
         return boardDTO;
     }

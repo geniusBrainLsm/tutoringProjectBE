@@ -17,7 +17,7 @@ import java.util.Optional;
 public class BoardServiceImpl implements BoardService{
     private final BoardRepository boardRepository;
     @Override
-    public BoardDTO createPost(BoardDTO boardDTO, TagDTO tagDTOS) {
+    public BoardDTO createPost(BoardDTO boardDTO) {
 
         Board board = boardDTO.toEntity();
 
@@ -27,12 +27,15 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
-    public BoardDTO updatePost(BoardDTO boardDTO, TagDTO tagDTOS) {
+    public BoardDTO updatePost(BoardDTO boardDTO) {
 
         Board board = boardRepository.findById(boardDTO.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Board", "id", boardDTO.getId()));
-
-        board.setTag(boardDTO.getTag());
+        List<TagDTO> tag = new ArrayList<>();
+        for(TagDTO tagDTO : tag){
+            tag.add(tagDTO);
+        }
+        board.setTag(boardDTO.toEntity().getTag());
         board.setTitle(boardDTO.getTitle());
         board.setContents(boardDTO.getContents());
 

@@ -13,8 +13,8 @@ import java.util.Optional;
 //페이지네이션 해야됌
 
 public interface BoardService {
-    BoardDTO createPost(BoardDTO boardDTO, TagDTO tagDTOS);
-    BoardDTO updatePost(BoardDTO boardDTO, TagDTO tagDTOS);
+    BoardDTO createPost(BoardDTO boardDTO);
+    BoardDTO updatePost(BoardDTO boardDTO);
 
     Optional<BoardDTO> getPost(Long id);
     List<BoardDTO> getAllPost();
