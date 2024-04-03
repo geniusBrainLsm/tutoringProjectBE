@@ -3,6 +3,8 @@ package com.lsm.backend.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -16,4 +18,7 @@ public class Tag {
 
     @Column(name = "contents")
     private String contents;
+
+    @ManyToMany(mappedBy = "tag", cascade = CascadeType.ALL)
+    private List<Board> boards;
 }

@@ -26,7 +26,11 @@ public class Board {
 
     private String contents;
     @ManyToMany
-    @JoinColumn(name = "board_id")
+    @JoinTable(
+            name = "board_tag",
+            joinColumns = @JoinColumn(name = "board_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
     private List<Tag> tag;
 
     private Long likeCount;

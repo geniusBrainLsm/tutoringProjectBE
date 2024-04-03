@@ -40,46 +40,39 @@ public class BoardDTO {
     private LocalDateTime modifiedAt;
 
     public Board toEntity() {
-        Board board = Board.builder()
+
+        return Board.builder()
                 .title(title)
                 .writer(writer)
                 .boardType(boardType)
                 .contents(contents)
                 .likeCount(likeCount)
                 .viewCounter(viewCounter)
-                .build();
 
-        List<Tag> tagEntities = new ArrayList<>();
-        for(TagDTO tagDTO : tag){
-            Tag tag = Tag.builder()
-                    .contents(tagDTO.getContents())
-                    .build();
-            tagEntities.add(tag);
-        }
-
-        board.setTag(tagEntities);
-        return board;
+                .tag(tag.stream()
+                        .map(tagDTO -> Tag.builder()
+                                .contents(tagDTO.getContents())
+                                .build())
+                        .collect(Collectors.toList()))
+                        .build();
     }
 
     public static BoardDTO fromEntity(Board board) {
-        BoardDTO boardDTO = new BoardDTO();
-        boardDTO.setId(board.getId());
-        boardDTO.setBoardType(board.getBoardType());
-        boardDTO.setTitle(board.getTitle());
-        boardDTO.setWriter(board.getWriter());
-        boardDTO.setContents(board.getContents());
-        boardDTO.setLikeCount(board.getLikeCount());
-        boardDTO.setViewCounter(board.getViewCounter());
-        boardDTO.setCreatedAt(board.getCreatedAt());
-        boardDTO.setModifiedAt(board.getModifiedAt());
-
-        List<TagDTO> tagDTOS = board.getTag().stream()
-                .map(tag->TagDTO.builder()
-                        .contents(tag.getContents())
-                        .build())
-                .collect(Collectors.toList());
-        boardDTO.setTag(tagDTOS);
-
-        return boardDTO;
+        return BoardDTO.builder()
+                .id(board.getId())
+                .boardType(board.getBoardType())
+                .title(board.getTitle())
+                .writer(board.getWriter())
+                .contents(board.getContents())
+                .likeCount(board.getLikeCount())
+                .viewCounter(board.getViewCounter())
+                .createdAt(board.getCreatedAt())
+                .modifiedAt(board.getModifiedAt())
+                .tag(board.getTag().stream()
+                        .map(tag -> TagDTO.builder()
+                                .contents(tag.getContents())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
     }
 }
