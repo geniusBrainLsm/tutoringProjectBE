@@ -40,6 +40,9 @@ public class Board {
     @OneToMany(mappedBy = "board")
     private List<Comment> comments;
 
+    @Transient //이거 그냥 갯수세기용임 영속성데이터아님
+    private Long commentsCount;
+
     @Column(name = "created_at")
 
     private LocalDateTime createdAt;

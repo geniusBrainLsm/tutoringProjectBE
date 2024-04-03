@@ -32,6 +32,8 @@ public class BoardDTO {
     private Long likeCount;
 
     private Long viewCounter;
+    @Builder.Default
+    private Long commentsCount = 0L;
 
     @Column
     private LocalDateTime createdAt;
@@ -54,6 +56,7 @@ public class BoardDTO {
                                 .contents(tagDTO.getContents())
                                 .build())
                         .collect(Collectors.toList()))
+                .commentsCount(commentsCount)
                         .build();
     }
 
@@ -64,6 +67,7 @@ public class BoardDTO {
                 .title(board.getTitle())
                 .writer(board.getWriter())
                 .contents(board.getContents())
+                .commentsCount(board.getCommentsCount())
                 .likeCount(board.getLikeCount())
                 .viewCounter(board.getViewCounter())
                 .createdAt(board.getCreatedAt())
