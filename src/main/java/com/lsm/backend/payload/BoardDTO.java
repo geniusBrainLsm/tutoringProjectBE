@@ -61,13 +61,16 @@ public class BoardDTO {
     }
 
     public static BoardDTO fromEntity(Board board) {
+        Long commentsCount = (long) board.getComments().size();
+        //이건 댓글수는 Entity에 없으니까 이렇게 불러와서 빌드함
+
         return BoardDTO.builder()
                 .id(board.getId())
                 .boardType(board.getBoardType())
                 .title(board.getTitle())
                 .writer(board.getWriter())
                 .contents(board.getContents())
-                .commentsCount(board.getCommentsCount())
+                .commentsCount(commentsCount)
                 .likeCount(board.getLikeCount())
                 .viewCounter(board.getViewCounter())
                 .createdAt(board.getCreatedAt())
