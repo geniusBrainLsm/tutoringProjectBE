@@ -17,8 +17,8 @@ import java.util.Optional;
 public class CommentController {
     private final CommentServiceImpl commentService;
     @PostMapping
-    public ResponseEntity<?> createComment(CommentDTO commentDTO){
-        CommentDTO createdDTO = commentService.createComment(commentDTO);
+    public ResponseEntity<?> createComment(CommentDTO commentDTO, Long id){
+        CommentDTO createdDTO = commentService.createComment(commentDTO, id);
         return ResponseEntity.status(201).body(createdDTO);
     }
     @DeleteMapping("/{id}")
@@ -42,8 +42,8 @@ public class CommentController {
         return ResponseEntity.ok(comments);
     }
     @PutMapping
-    public ResponseEntity<?> updateComment(@RequestBody CommentDTO commentDTO){
-        CommentDTO createdDTO = commentService.updateComment(commentDTO);
+    public ResponseEntity<?> updateComment(@RequestBody CommentDTO commentDTO, @PathVariable Long id){
+        CommentDTO createdDTO = commentService.updateComment(commentDTO, id);
         return ResponseEntity.status(201).body(createdDTO);
     }
 }

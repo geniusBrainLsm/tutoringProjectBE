@@ -21,6 +21,8 @@ public class Comment {
     @JoinColumn(name = "board_id")
     private Board board;
 
+    //private Long boardId;
+
     @Column(length = 500)
     private String content;
 

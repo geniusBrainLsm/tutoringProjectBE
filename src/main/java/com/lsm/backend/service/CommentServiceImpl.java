@@ -5,10 +5,12 @@ import com.lsm.backend.model.Board;
 import com.lsm.backend.model.Comment;
 import com.lsm.backend.payload.BoardDTO;
 import com.lsm.backend.payload.CommentDTO;
+import com.lsm.backend.repository.BoardRepository;
 import com.lsm.backend.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -17,14 +19,18 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class  CommentServiceImpl implements CommentService{
     private final CommentRepository commentRepository;
+    private final BoardRepository boardRepository;
     @Override
-    public CommentDTO createComment(CommentDTO commentDTO) {
+    public CommentDTO createComment(CommentDTO commentDTO, Long id) {
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Board", "id", id));
         Comment comment = commentRepository.save(commentDTO.toEntity());
+        comment.setBoard(board);
         return CommentDTO.fromEntity(comment);
     }
 
     @Override
-    public CommentDTO updateComment(CommentDTO commentDTO) {
+    public CommentDTO updateComment(CommentDTO commentDTO, Long id) {
 
         Comment comment = commentRepository.findById(commentDTO.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentDTO.getId()));

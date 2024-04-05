@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CommentService {
-    CommentDTO createComment(CommentDTO commentDTO);
+    CommentDTO createComment(CommentDTO commentDTO, Long id);
 
-    CommentDTO updateComment(CommentDTO commentDTO);
+    CommentDTO updateComment(CommentDTO commentDTO, Long id);
 
     Optional<CommentDTO> getComment(Long id);
 
