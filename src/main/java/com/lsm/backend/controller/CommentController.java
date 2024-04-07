@@ -19,7 +19,7 @@ public class CommentController {
     private final CommentServiceImpl commentService;
     @PostMapping("/{id}/comment")
     public ResponseEntity<?> createComment(@RequestBody CommentRequestDTO commentDTO, @PathVariable Long id, UserPrincipal userPrincipal){
-        CommentDTO createdDTO =  commentService.createComment(commentDTO, id, userPrincipal);
+        CommentDTO createdDTO = commentService.createComment(commentDTO, id, userPrincipal);
         return ResponseEntity.status(201).body(createdDTO);
     }
     @DeleteMapping("/{id}")
