@@ -1,8 +1,8 @@
 package com.lsm.backend.model;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,6 +11,9 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "comment")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Comment {
 
     @Id
@@ -30,6 +33,7 @@ public class Comment {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Nullable
     @ManyToOne
     @JoinColumn(name = "parent_id")
     private Comment parent;

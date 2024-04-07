@@ -1,6 +1,7 @@
 package com.lsm.backend.payload;
 
 import com.lsm.backend.model.Board;
+import com.lsm.backend.model.Comment;
 import com.lsm.backend.model.Tag;
 import jakarta.persistence.Column;
 import lombok.*;
@@ -29,6 +30,8 @@ public class BoardDTO {
 
     private List<TagDTO> tag;
 
+    private List<CommentResponseDTO> comment;
+
     private Long likeCount;
 
     private Long viewCounter;
@@ -53,15 +56,17 @@ public class BoardDTO {
 
                 .tag(tag.stream()
                         .map(tagDTO -> Tag.builder()
+                                .id(tagDTO.getId())
                                 .contents(tagDTO.getContents())
                                 .build())
                         .collect(Collectors.toList()))
                 .commentsCount(commentsCount)
-                        .build();
+                .comment(
+                .build();
     }
 
     public static BoardDTO fromEntity(Board board) {
-        Long commentsCount = (long) board.getComments().size();
+        Long commentsCount = (long) board.getComment().size();
         //이건 댓글수는 Entity에 없으니까 이렇게 불러와서 빌드함
 
         return BoardDTO.builder()
