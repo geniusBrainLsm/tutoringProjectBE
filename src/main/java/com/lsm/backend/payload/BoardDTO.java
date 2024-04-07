@@ -61,7 +61,6 @@ public class BoardDTO {
                                 .build())
                         .collect(Collectors.toList()))
                 .commentsCount(commentsCount)
-                .comment(
                 .build();
     }
 
@@ -82,9 +81,21 @@ public class BoardDTO {
                 .modifiedAt(board.getModifiedAt())
                 .tag(board.getTag().stream()
                         .map(tag -> TagDTO.builder()
+                                .id(tag.getId())
                                 .contents(tag.getContents())
                                 .build())
                         .collect(Collectors.toList()))
+
+                .comment(board.getComment().stream()
+                        .map(comment -> CommentResponseDTO.builder()
+                                .id(comment.getId())
+                                .content(comment.getContent())
+                                .boardId(comment.getBoard().getId())
+                                .parentId(comment.getParent().getId() != null ? comment.getParent().getId() : null)
+                                .userName(comment.getUser().getName())
+                                .build())
+                                .collect(Collectors.toList())
+                        )
                 .build();
     }
 }

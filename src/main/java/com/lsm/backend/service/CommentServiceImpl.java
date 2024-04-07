@@ -11,6 +11,7 @@ import com.lsm.backend.repository.BoardRepository;
 import com.lsm.backend.repository.CommentRepository;
 import com.lsm.backend.repository.UserRepository;
 import com.lsm.backend.security.UserPrincipal;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ public class  CommentServiceImpl implements CommentService{
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
     @Override
+    @Transactional
     public CommentDTO createComment(CommentRequestDTO commentDTO, Long id, UserPrincipal userPrincipal) {
         System.out.println(id);
         System.out.println(userPrincipal);
