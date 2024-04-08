@@ -37,7 +37,8 @@ public class Board {
 
     private Long viewCounter;
 
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER)
+    @OrderBy("id asc")
     private List<Comment> comment;
 
     @Transient //이거 그냥 갯수세기용임 영속성데이터아님

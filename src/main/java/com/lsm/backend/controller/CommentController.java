@@ -3,6 +3,7 @@ package com.lsm.backend.controller;
 import com.lsm.backend.model.Comment;
 import com.lsm.backend.payload.CommentDTO;
 import com.lsm.backend.payload.CommentRequestDTO;
+import com.lsm.backend.security.CurrentUser;
 import com.lsm.backend.security.UserPrincipal;
 import com.lsm.backend.service.CommentServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +19,9 @@ import java.util.Optional;
 public class CommentController {
     private final CommentServiceImpl commentService;
     @PostMapping("/{id}/comment")
-    public ResponseEntity<?> createComment(@RequestBody CommentRequestDTO commentDTO, @PathVariable Long id, UserPrincipal userPrincipal){
-        CommentDTO createdDTO = commentService.createComment(commentDTO, id, userPrincipal);
-        return ResponseEntity.status(201).body(createdDTO);
+    public ResponseEntity<?> createComment(@RequestBody CommentRequestDTO commentDTO, @CurrentUser UserPrincipal userPrincipal, @PathVariable Long id){
+        //commentService.createComment(commentDTO, userPrincipal, id);
+        return ResponseEntity.status(201).body(commentService.createComment(commentDTO, userPrincipal, id));
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteComment(@PathVariable Long id){

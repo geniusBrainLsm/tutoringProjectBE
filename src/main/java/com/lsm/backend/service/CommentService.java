@@ -5,13 +5,14 @@ import com.lsm.backend.model.Comment;
 import com.lsm.backend.payload.BoardDTO;
 import com.lsm.backend.payload.CommentDTO;
 import com.lsm.backend.payload.CommentRequestDTO;
+import com.lsm.backend.payload.CommentResponseDTO;
 import com.lsm.backend.security.UserPrincipal;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface CommentService {
-    CommentDTO createComment(CommentRequestDTO commentDTO, Long id, UserPrincipal userPrincipal);
+    CommentResponseDTO createComment(CommentRequestDTO commentDTO, UserPrincipal userPrincipal, Long id);
 
     CommentDTO updateComment(CommentDTO commentDTO, Long id);
 

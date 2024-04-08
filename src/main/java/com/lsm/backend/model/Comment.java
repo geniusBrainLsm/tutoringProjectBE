@@ -46,5 +46,15 @@ public class Comment {
 
     @Column(name = "modified_at")
     private LocalDateTime modifiedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.modifiedAt = LocalDateTime.now();
+    }
 }
 

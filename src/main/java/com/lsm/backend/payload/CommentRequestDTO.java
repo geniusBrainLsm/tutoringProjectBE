@@ -3,12 +3,14 @@ package com.lsm.backend.payload;
 import com.lsm.backend.model.Board;
 import com.lsm.backend.model.Comment;
 import com.lsm.backend.model.User;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 
 public class CommentRequestDTO {
     private Long id;

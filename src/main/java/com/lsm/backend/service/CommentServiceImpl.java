@@ -7,6 +7,7 @@ import com.lsm.backend.model.User;
 import com.lsm.backend.payload.BoardDTO;
 import com.lsm.backend.payload.CommentDTO;
 import com.lsm.backend.payload.CommentRequestDTO;
+import com.lsm.backend.payload.CommentResponseDTO;
 import com.lsm.backend.repository.BoardRepository;
 import com.lsm.backend.repository.CommentRepository;
 import com.lsm.backend.repository.UserRepository;
@@ -28,18 +29,23 @@ public class  CommentServiceImpl implements CommentService{
     private final UserRepository userRepository;
     @Override
     @Transactional
-    public CommentDTO createComment(CommentRequestDTO commentDTO, Long id, UserPrincipal userPrincipal) {
-        System.out.println(id);
-        System.out.println(userPrincipal);
+    public CommentResponseDTO createComment(CommentRequestDTO commentDTO, UserPrincipal userPrincipal, Long id) {
+
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Board", "id", id));
+
         User user = userRepository.findById(userPrincipal.getId())
-                .orElseThrow(()->new ResourceNotFoundException("user", "userName", userPrincipal.getId()));
-        Comment comment = commentRepository.save(commentDTO.toEntity());
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
+
+        Comment comment = commentDTO.toEntity();
         comment.setBoard(board);
         comment.setUser(user);
-        comment.setParent(commentDTO.getParent());
-        return CommentDTO.fromEntity(comment);
+        //comment.setParent(commentDTO.getParent());
+
+        comment = commentRepository.save(comment);
+
+
+        return CommentResponseDTO.fromEntity(comment);
     }
 
     @Override

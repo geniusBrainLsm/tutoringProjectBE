@@ -30,7 +30,7 @@ public class CommentDTO {
         return Comment.builder()
                 .id(id)
                 .content(content)
-                .user(user)
+                //.user(user)
                 .board(board)
                 .parent(parent)
                 .build();
