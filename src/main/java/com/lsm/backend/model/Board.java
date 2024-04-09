@@ -1,5 +1,6 @@
 package com.lsm.backend.model;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,6 +32,7 @@ public class Board {
             joinColumns = @JoinColumn(name = "board_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
+    @Nullable
     private List<Tag> tag;
 
     private Long likeCount;

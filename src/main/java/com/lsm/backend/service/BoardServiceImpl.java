@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,7 +26,8 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public BoardDTO createPost(BoardDTO boardDTO) {
         //태그가져오기. 중복체크포함해서
-        List<Tag> tags = boardDTO.getTag().stream()
+        List<Tag> tags = Optional.ofNullable(boardDTO.getTag()).orElseGet(Collections::emptyList)
+                .stream()
                 .map(tagDTO -> {
                     // 데이터베이스에서 태그 검색
                     return tagRepository.findByContents(tagDTO.getContents())

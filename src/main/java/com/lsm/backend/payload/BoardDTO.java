@@ -8,7 +8,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Getter
@@ -54,7 +56,8 @@ public class BoardDTO {
                 .likeCount(likeCount)
                 .viewCounter(viewCounter)
 
-                .tag(tag.stream()
+                .tag(Optional.ofNullable(tag).orElseGet(Collections::emptyList)
+                        .stream()
                         .map(tagDTO -> Tag.builder()
                                 .id(tagDTO.getId())
                                 .contents(tagDTO.getContents())
@@ -65,8 +68,35 @@ public class BoardDTO {
     }
 
     public static BoardDTO fromEntity(Board board) {
-        Long commentsCount = (long) board.getComment().size();
+        Long commentsCount;
+        if(board.getComment() == null){
+            commentsCount = 0L;
+        }
+        else{
+            commentsCount = (long) board.getComment().size();
+        }
+
         //이건 댓글수는 Entity에 없으니까 이렇게 불러와서 빌드함
+        List<TagDTO> tagDTOs = Optional.ofNullable(board.getTag())
+                .orElseGet(Collections::emptyList)
+                .stream()
+                .map(tag -> TagDTO.builder()
+                        .id(tag.getId())
+                        .contents(tag.getContents())
+                        .build())
+                .collect(Collectors.toList());
+
+        List<CommentResponseDTO> commentResponseDTOs = Optional.ofNullable(board.getComment())
+                .orElseGet(Collections::emptyList)
+                .stream()
+                .map(comment -> CommentResponseDTO.builder()
+                        .id(comment.getId())
+                        .content(comment.getContent())
+                        .boardId(comment.getBoard().getId())
+                        .parentId(comment.getParent().getId() != null ? comment.getParent().getId() : null)
+                        .userName(comment.getUser().getName())
+                        .build())
+                .collect(Collectors.toList());
 
         return BoardDTO.builder()
                 .id(board.getId())
@@ -79,23 +109,9 @@ public class BoardDTO {
                 .viewCounter(board.getViewCounter())
                 .createdAt(board.getCreatedAt())
                 .modifiedAt(board.getModifiedAt())
-                .tag(board.getTag().stream()
-                        .map(tag -> TagDTO.builder()
-                                .id(tag.getId())
-                                .contents(tag.getContents())
-                                .build())
-                        .collect(Collectors.toList()))
+                .tag(tagDTOs)
 
-                .comment(board.getComment().stream()
-                        .map(comment -> CommentResponseDTO.builder()
-                                .id(comment.getId())
-                                .content(comment.getContent())
-                                .boardId(comment.getBoard().getId())
-                                .parentId(comment.getParent().getId() != null ? comment.getParent().getId() : null)
-                                .userName(comment.getUser().getName())
-                                .build())
-                                .collect(Collectors.toList())
-                        )
+                .comment(commentResponseDTOs)
                 .build();
     }
 }
