@@ -5,6 +5,8 @@ import com.lsm.backend.payload.BoardDTO;
 import com.lsm.backend.payload.TagDTO;
 import com.lsm.backend.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -17,6 +19,6 @@ public interface BoardService {
     BoardDTO updatePost(BoardDTO boardDTO);
 
     Optional<BoardDTO> getPost(Long id);
-    List<BoardDTO> getAllPost();
+    Page<BoardDTO> getAllPost(Pageable pageable);
     void deletePost(Long id);
 }

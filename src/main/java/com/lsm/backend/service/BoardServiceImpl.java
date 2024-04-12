@@ -10,6 +10,10 @@ import com.lsm.backend.payload.TagDTO;
 import com.lsm.backend.repository.BoardRepository;
 import com.lsm.backend.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -101,14 +105,19 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
-    public List<BoardDTO> getAllPost() {
-        List<BoardDTO> boardDTOList = new ArrayList<>();
-        List<Board> boards = boardRepository.findAll();
+    public Page<BoardDTO> getAllPost(Pageable pageable) {
+        int page = pageable.getPageNumber() - 1; // page 위치에 있는 값은 0부터 시작한다.
+        int pageLimit = 3; // 한페이지에 보여줄 글 개수
 
-        for(Board board : boards){
-            BoardDTO boardDto = BoardDTO.fromEntity(board);
-            boardDTOList.add(boardDto);
-        }
+        // 3이면 1 2 (3) 4 5
+        //Page<BoardDTO> boardDTOList = new ArrayList<>();
+        Page<Board> boards = boardRepository.findAll(PageRequest.of(page, pageLimit , Sort.by(Sort.Direction.DESC, "id")));
+
+        Page<BoardDTO> boardDTOs = boards
+                .stream()
+                .map(
+                        board -> new boardDTO(board)
+                );
         return boardDTOList;
     }
 
