@@ -16,9 +16,10 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/api")
 public class CommentController {
     private final CommentServiceImpl commentService;
-    @PostMapping("/{id}/comment")
+    @PostMapping("/board/{id}/comment")
     public ResponseEntity<?> createComment(@RequestBody CommentRequestDTO commentDTO, @CurrentUser UserPrincipal userPrincipal, @PathVariable Long id){
         //commentService.createComment(commentDTO, userPrincipal, id);
         return ResponseEntity.status(201).body(commentService.createComment(commentDTO, userPrincipal, id));

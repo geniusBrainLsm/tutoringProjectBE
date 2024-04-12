@@ -5,6 +5,9 @@ import com.lsm.backend.payload.BoardDTO;
 import com.lsm.backend.payload.TagDTO;
 import com.lsm.backend.service.BoardServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -39,9 +42,12 @@ public class BoardController {
         }
     }
     @GetMapping
-    public ResponseEntity<List<BoardDTO>> getAllPost(){
-        List<BoardDTO> posts = boardService.getAllPost();
-        return ResponseEntity.ok(posts);
+    public ResponseEntity<Page<BoardDTO>> getAllPost(@PageableDefault(page = 1) Pageable pageable){
+        Page<BoardDTO> posts = boardService.getAllPost(pageable);
+        int blockLimit = 3;
+        int startPage = (((int) Math.ceil(((double) pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1;
+        int endPage = Math.min((startPage + blockLimit - 1), posts.getTotalPages());
+        return ResponseEntity.status(201).body(posts);
     }
     @PutMapping("/{id}")
     public ResponseEntity<?> editPost(@PathVariable Long id, @RequestBody BoardDTO boardDTO){

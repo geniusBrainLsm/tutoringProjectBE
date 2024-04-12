@@ -106,19 +106,21 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public Page<BoardDTO> getAllPost(Pageable pageable) {
-        int page = pageable.getPageNumber() - 1; // page 위치에 있는 값은 0부터 시작한다.
-        int pageLimit = 3; // 한페이지에 보여줄 글 개수
+        int page = pageable.getPageNumber() - 1;
+        int pageLimit = 7;
 
-        // 3이면 1 2 (3) 4 5
-        //Page<BoardDTO> boardDTOList = new ArrayList<>();
-        Page<Board> boards = boardRepository.findAll(PageRequest.of(page, pageLimit , Sort.by(Sort.Direction.DESC, "id")));
+        Page<Board> boards = boardRepository.findAll(PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
 
-        Page<BoardDTO> boardDTOs = boards
-                .stream()
-                .map(
-                        board -> new boardDTO(board)
-                );
-        return boardDTOList;
+        Page<BoardDTO> boardDTOs = boards.map(board -> BoardDTO.builder()
+                .id(board.getId())
+                .title(board.getTitle())
+                .contents(board.getContents())
+                .writer(board.getWriter())
+                .createdAt(board.getCreatedAt())
+                .modifiedAt(board.getModifiedAt())
+                .build());
+
+        return boardDTOs;
     }
 
     @Override
