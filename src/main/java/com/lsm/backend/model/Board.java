@@ -37,7 +37,7 @@ public class Board {
 
     private Long likeCount;
 
-    private Long viewCounter;
+    private Long viewCount;
 
     @OneToMany(mappedBy = "board", fetch = FetchType.EAGER)
     @OrderBy("id asc")

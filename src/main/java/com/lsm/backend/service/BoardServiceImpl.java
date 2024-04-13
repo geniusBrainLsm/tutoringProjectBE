@@ -96,31 +96,32 @@ public class BoardServiceImpl implements BoardService{
         try{
             Board board = boardRepository.findById(id)
                     .orElseThrow(()-> new Exception("없어용"));
-            board.setViewCounter(board.getViewCounter()+1);
+            board.setViewCount(board.getViewCount()+1);
             return Optional.of(BoardDTO.fromEntity(board));
 
         } catch (Exception e){
             return Optional.empty();
         }
     }
+    @Override
+    public List<BoardDTO> getSearchPost(String keyword ,Pageable pageable) {
+        int page = pageable.getPageNumber() - 1;
+        int pageLimit = 5;
 
+        List<Board> boards = boardRepository.findByTitleContaining(keyword ,PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
+
+        return boards.stream()
+                .map(BoardDTO::fromEntity)
+                .collect(Collectors.toList());
+    }
     @Override
     public Page<BoardDTO> getAllPost(Pageable pageable) {
         int page = pageable.getPageNumber() - 1;
-        int pageLimit = 7;
+        int pageLimit = 5;
 
         Page<Board> boards = boardRepository.findAll(PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
 
-        Page<BoardDTO> boardDTOs = boards.map(board -> BoardDTO.builder()
-                .id(board.getId())
-                .title(board.getTitle())
-                .contents(board.getContents())
-                .writer(board.getWriter())
-                .createdAt(board.getCreatedAt())
-                .modifiedAt(board.getModifiedAt())
-                .build());
-
-        return boardDTOs;
+        return boards.map(BoardDTO::fromEntity);
     }
 
     @Override

@@ -36,7 +36,7 @@ public class BoardDTO {
 
     private Long likeCount;
 
-    private Long viewCounter;
+    private Long viewCount;
     @Builder.Default
     private Long commentsCount = 0L;
 
@@ -54,7 +54,7 @@ public class BoardDTO {
                 .boardType(boardType)
                 .contents(contents)
                 .likeCount(likeCount)
-                .viewCounter(viewCounter)
+                .viewCount(viewCount)
 
                 .tag(Optional.ofNullable(tag).orElseGet(Collections::emptyList)
                         .stream()
@@ -106,7 +106,7 @@ public class BoardDTO {
                 .contents(board.getContents())
                 .commentsCount(commentsCount)
                 .likeCount(board.getLikeCount())
-                .viewCounter(board.getViewCounter())
+                .viewCount(board.getViewCount())
                 .createdAt(board.getCreatedAt())
                 .modifiedAt(board.getModifiedAt())
                 .tag(tagDTOs)
