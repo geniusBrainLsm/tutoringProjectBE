@@ -41,7 +41,8 @@ public class BoardController {
         }
     }
     @GetMapping("/search")
-    public ResponseEntity<List<BoardDTO>> getSearchPost(@RequestParam String keyword, @RequestParam String sortBy,
+    public ResponseEntity<List<BoardDTO>> getSearchPost(@PathVariable String boardType ,@RequestParam String keyword,
+                                                        @RequestParam String sortBy,
                                                         @PageableDefault(page = 1) Pageable pageable){
         Sort sort;
         if (sortBy.equals("view")) {
@@ -53,7 +54,7 @@ public class BoardController {
         }
 
         Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
-        List<BoardDTO> searchResult = boardService.getSearchPost(keyword, sortedPageable);
+        List<BoardDTO> searchResult = boardService.getSearchPost(boardType, keyword, sortedPageable);
 
         return ResponseEntity.ok(searchResult);
     }

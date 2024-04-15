@@ -104,11 +104,11 @@ public class BoardServiceImpl implements BoardService{
         }
     }
     @Override
-    public List<BoardDTO> getSearchPost(String keyword ,Pageable pageable) {
+    public List<BoardDTO> getSearchPost(String boardType, String keyword ,Pageable pageable) {
         int page = pageable.getPageNumber() - 1;
         int pageLimit = 5;
 
-        List<Board> boards = boardRepository.findByTitleContaining(keyword ,PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
+        List<Board> boards = boardRepository.findByTitleContaining(boardType, keyword ,PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
 
         return boards.stream()
                 .map(BoardDTO::fromEntity)

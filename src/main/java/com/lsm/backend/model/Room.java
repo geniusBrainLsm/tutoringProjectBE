@@ -26,8 +26,6 @@ public class Room {
     @Column(name="owner", nullable = true)
     private String owner;
 
-//    @OneToMany(mappedBy = "room")
-//    private List<Drawings> drawings;
 
     @CreationTimestamp
     @Column(name="created_date",nullable = true)

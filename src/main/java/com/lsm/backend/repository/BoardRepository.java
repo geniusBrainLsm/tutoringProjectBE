@@ -12,6 +12,6 @@ import java.util.List;
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
     Long countCommentsById(Long id);
-    List<Board> findByTitleContaining(String keyword, Pageable pageable);
+    List<Board> findByTitleContaining(String boardType ,String keyword, Pageable pageable);
     
 }
