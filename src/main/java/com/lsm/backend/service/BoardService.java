@@ -19,7 +19,7 @@ public interface BoardService {
     BoardDTO updatePost(BoardDTO boardDTO);
 
     Optional<BoardDTO> getPost(Long id);
-    List<BoardDTO> getSearchPost(String boardType, String keyword, Pageable pageable);
+    Page<BoardDTO> getSearchPost(String boardType, String keyword, String sortBy ,Pageable pageable);
     Page<BoardDTO> getAllPost(Pageable pageable);
     void deletePost(Long id);
 }

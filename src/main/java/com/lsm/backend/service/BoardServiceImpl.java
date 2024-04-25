@@ -104,15 +104,23 @@ public class BoardServiceImpl implements BoardService{
         }
     }
     @Override
-    public List<BoardDTO> getSearchPost(String boardType, String keyword ,Pageable pageable) {
+    public Page<BoardDTO> getSearchPost(String boardType, String keyword, String sortBy, Pageable pageable) {
         int page = pageable.getPageNumber() - 1;
         int pageLimit = 5;
+        Sort sort;
+        if (sortBy.equals("view")) {
+            sort = Sort.by(Sort.Direction.DESC, "viewCount");
+        } else if (sortBy.equals("like")) {
+            sort = Sort.by(Sort.Direction.DESC, "likeCount");
+        } else {
+            sort = Sort.by(Sort.Direction.DESC, "id");
+        }
 
-        List<Board> boards = boardRepository.findByTitleContaining(boardType, keyword ,PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+        Page<Board> boards = boardRepository.findByBoardTypeAndTitleContaining(boardType, keyword, sortedPageable);
 
-        return boards.stream()
-                .map(BoardDTO::fromEntity)
-                .collect(Collectors.toList());
+        return boards.map(BoardDTO::fromEntity);
+
     }
     @Override
     public Page<BoardDTO> getAllPost(Pageable pageable) {
