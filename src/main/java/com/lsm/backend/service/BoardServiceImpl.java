@@ -2,11 +2,8 @@ package com.lsm.backend.service;
 
 import com.lsm.backend.exception.ResourceNotFoundException;
 import com.lsm.backend.model.Board;
-import com.lsm.backend.model.Comment;
 import com.lsm.backend.model.Tag;
-import com.lsm.backend.payload.BoardDTO;
-import com.lsm.backend.payload.CommentDTO;
-import com.lsm.backend.payload.TagDTO;
+import com.lsm.backend.payload.board.BoardDTO;
 import com.lsm.backend.repository.BoardRepository;
 import com.lsm.backend.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -124,11 +120,7 @@ public class BoardServiceImpl implements BoardService{
     }
     @Override
     public Page<BoardDTO> getAllPost(Pageable pageable) {
-        int page = pageable.getPageNumber() - 1;
-        int pageLimit = 5;
-
-        Page<Board> boards = boardRepository.findAll(PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
-
+        Page<Board> boards = boardRepository.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "id")));
         return boards.map(BoardDTO::fromEntity);
     }
 

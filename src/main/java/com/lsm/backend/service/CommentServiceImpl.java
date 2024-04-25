@@ -4,10 +4,9 @@ import com.lsm.backend.exception.ResourceNotFoundException;
 import com.lsm.backend.model.Board;
 import com.lsm.backend.model.Comment;
 import com.lsm.backend.model.User;
-import com.lsm.backend.payload.BoardDTO;
-import com.lsm.backend.payload.CommentDTO;
-import com.lsm.backend.payload.CommentRequestDTO;
-import com.lsm.backend.payload.CommentResponseDTO;
+import com.lsm.backend.payload.board.CommentDTO;
+import com.lsm.backend.payload.board.CommentRequestDTO;
+import com.lsm.backend.payload.board.CommentResponseDTO;
 import com.lsm.backend.repository.BoardRepository;
 import com.lsm.backend.repository.CommentRepository;
 import com.lsm.backend.repository.UserRepository;
@@ -15,11 +14,6 @@ import com.lsm.backend.security.UserPrincipal;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import javax.swing.text.html.Option;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

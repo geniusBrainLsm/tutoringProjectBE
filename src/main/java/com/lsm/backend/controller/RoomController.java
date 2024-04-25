@@ -1,29 +1,14 @@
 package com.lsm.backend.controller;
 
-import com.lsm.backend.exception.ResourceNotFoundException;
-
-import com.lsm.backend.model.Room;
-import com.lsm.backend.model.User;
-import com.lsm.backend.payload.CommentDTO;
 import com.lsm.backend.payload.RoomDTO;
-import com.lsm.backend.repository.RoomRepository;
 import com.lsm.backend.repository.UserRepository;
-import com.lsm.backend.security.TokenProvider;
 import com.lsm.backend.service.RoomServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.web.bind.annotation.*;
-import lombok.extern.slf4j.Slf4j;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.security.Principal;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController

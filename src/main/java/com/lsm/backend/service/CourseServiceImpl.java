@@ -4,22 +4,22 @@ import com.lsm.backend.exception.ResourceNotFoundException;
 import com.lsm.backend.model.Course;
 import com.lsm.backend.model.CourseUpdateHistory;
 import com.lsm.backend.model.Curriculum;
-import com.lsm.backend.payload.BoardDTO;
-import com.lsm.backend.payload.CourseDTO;
-import com.lsm.backend.payload.CourseUpdateHistoryDTO;
-import com.lsm.backend.payload.CurriculumDTO;
+import com.lsm.backend.payload.course.CourseDTO;
+import com.lsm.backend.payload.course.CourseUpdateHistoryDTO;
+import com.lsm.backend.payload.course.CurriculumDTO;
 import com.lsm.backend.repository.CourseRepository;
 
 import com.lsm.backend.repository.CurriculumRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -57,15 +57,9 @@ public class CourseServiceImpl implements CourseService{
     }
 
     @Override
-    public List<CourseDTO> getAllCourses() {
-        List<CourseDTO> courseDTOList = new ArrayList<>();
-        List<Course> courses = courseRepository.findAll();
-
-        for(Course course : courses){
-            CourseDTO courseDTO = CourseDTO.fromEntity(course);
-            courseDTOList.add(courseDTO);
-        }
-        return courseDTOList;
+    public Page<CourseDTO> getAllCourses(Pageable pageable) {
+        Page<Course> courses = courseRepository.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "id")));
+        return courses.map(CourseDTO::fromEntity);
     }
 
 

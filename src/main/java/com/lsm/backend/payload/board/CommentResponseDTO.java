@@ -1,11 +1,8 @@
-package com.lsm.backend.payload;
+package com.lsm.backend.payload.board;
 
-import com.lsm.backend.model.Board;
 import com.lsm.backend.model.Comment;
-import com.lsm.backend.model.User;
 import lombok.*;
 
-import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder

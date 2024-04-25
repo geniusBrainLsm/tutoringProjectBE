@@ -1,4 +1,4 @@
-package com.lsm.backend.payload;
+package com.lsm.backend.payload.course;
 
 import com.lsm.backend.model.Curriculum;
 import lombok.Getter;

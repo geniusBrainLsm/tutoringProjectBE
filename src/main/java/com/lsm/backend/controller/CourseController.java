@@ -1,18 +1,17 @@
 package com.lsm.backend.controller;
 
-import com.lsm.backend.model.Comment;
-import com.lsm.backend.model.Course;
-import com.lsm.backend.payload.BoardDTO;
-import com.lsm.backend.payload.CourseDTO;
-import com.lsm.backend.payload.CurriculumDTO;
+import com.lsm.backend.payload.course.CourseDTO;
+import com.lsm.backend.payload.course.CurriculumDTO;
 import com.lsm.backend.repository.CurriculumRepository;
 import com.lsm.backend.service.CourseServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,8 +37,8 @@ public class CourseController {
         }
     }
     @GetMapping
-    public ResponseEntity<List<CourseDTO>> getAllCourse(){
-        List<CourseDTO> courses =courseService.getAllCourses();
+    public ResponseEntity<Page<CourseDTO>> getAllCourse(@PageableDefault(page = 1) Pageable pageable){
+        Page<CourseDTO> courses =courseService.getAllCourses(pageable);
         return ResponseEntity.ok(courses);
     }
     @DeleteMapping("/{id}")

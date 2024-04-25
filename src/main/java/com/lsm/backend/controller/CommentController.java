@@ -1,18 +1,13 @@
 package com.lsm.backend.controller;
 
-import com.lsm.backend.model.Comment;
-import com.lsm.backend.payload.CommentDTO;
-import com.lsm.backend.payload.CommentRequestDTO;
+import com.lsm.backend.payload.board.CommentDTO;
+import com.lsm.backend.payload.board.CommentRequestDTO;
 import com.lsm.backend.security.CurrentUser;
 import com.lsm.backend.security.UserPrincipal;
 import com.lsm.backend.service.CommentServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController

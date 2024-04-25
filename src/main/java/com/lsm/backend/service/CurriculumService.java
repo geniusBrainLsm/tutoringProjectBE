@@ -1,9 +1,7 @@
 package com.lsm.backend.service;
 
-import com.lsm.backend.model.Curriculum;
-import com.lsm.backend.payload.CurriculumDTO;
+import com.lsm.backend.payload.course.CurriculumDTO;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 

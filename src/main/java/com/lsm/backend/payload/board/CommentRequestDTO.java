@@ -1,4 +1,4 @@
-package com.lsm.backend.payload;
+package com.lsm.backend.payload.board;
 
 import com.lsm.backend.model.Board;
 import com.lsm.backend.model.Comment;

@@ -1,4 +1,4 @@
-package com.lsm.backend.payload;
+package com.lsm.backend.payload.Auth;
 
 import lombok.Getter;
 import lombok.Setter;

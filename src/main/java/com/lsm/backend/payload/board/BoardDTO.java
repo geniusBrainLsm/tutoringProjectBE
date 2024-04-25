@@ -1,13 +1,11 @@
-package com.lsm.backend.payload;
+package com.lsm.backend.payload.board;
 
 import com.lsm.backend.model.Board;
-import com.lsm.backend.model.Comment;
 import com.lsm.backend.model.Tag;
 import jakarta.persistence.Column;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;

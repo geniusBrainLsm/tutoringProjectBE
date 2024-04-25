@@ -1,8 +1,6 @@
 package com.lsm.backend.service;
 
-import com.lsm.backend.model.Comment;
 import com.lsm.backend.model.Room;
-import com.lsm.backend.payload.CommentDTO;
 import com.lsm.backend.payload.RoomDTO;
 import com.lsm.backend.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;

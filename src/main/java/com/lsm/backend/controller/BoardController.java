@@ -1,8 +1,6 @@
 package com.lsm.backend.controller;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import com.lsm.backend.payload.BoardDTO;
+import com.lsm.backend.payload.board.BoardDTO;
 import com.lsm.backend.service.BoardServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController

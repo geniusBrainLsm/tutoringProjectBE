@@ -1,7 +1,6 @@
-package com.lsm.backend.payload;
+package com.lsm.backend.payload.board;
 
 import com.lsm.backend.model.Tag;
-import jakarta.persistence.Column;
 import lombok.*;
 
 @Getter

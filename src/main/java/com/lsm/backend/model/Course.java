@@ -17,11 +17,14 @@ public class Course {
     private Long id;
 
     private String title;
+    //썸네일이미지
     private String thumbnailUrl;
     private String instructorName;
     private String description;
+    //강의영상 커리큘럼 영상리스트
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private List<Curriculum> curricula = new ArrayList<>();
+    //업데이트내역
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private List<CourseUpdateHistory> updateHistories = new ArrayList<>();
 }

@@ -1,5 +1,4 @@
-package com.lsm.backend.payload;
-
+package com.lsm.backend.payload.Auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -8,10 +7,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LoginRequest {
+public class SignUpRequest {
+    @NotBlank
+    private String name;
     @NotBlank
     @Email
     private String email;
     @NotBlank
     private String password;
+    // Getters and Setters (Omitted for brevity)
 }
