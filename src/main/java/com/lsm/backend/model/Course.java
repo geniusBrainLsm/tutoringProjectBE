@@ -2,13 +2,16 @@ package com.lsm.backend.model;
 import com.lsm.backend.model.Curriculum;
 import com.lsm.backend.model.CourseUpdateHistory;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class Course {
@@ -27,4 +30,20 @@ public class Course {
     //업데이트내역
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private List<CourseUpdateHistory> updateHistories = new ArrayList<>();
+
+    @Column(name = "created_at")
+
+    private LocalDateTime createdAt;
+
+    @Column(name = "modified_at")
+    private LocalDateTime modifiedAt;
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.modifiedAt = LocalDateTime.now();
+    }
 }

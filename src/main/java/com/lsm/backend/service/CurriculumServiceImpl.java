@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 @Service
 public class CurriculumServiceImpl implements CurriculumService{
@@ -20,29 +22,26 @@ public class CurriculumServiceImpl implements CurriculumService{
 
 
     @Override
-    public List<CurriculumDTO> createCurriculum(List<CurriculumDTO> curriculumDTOS, Long courseId) {
+    public List<CurriculumDTO> createCurriculum(List<CurriculumDTO> curriculumDTOs, Long courseId) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", courseId));
 
-        List<CurriculumDTO> curriculumDTOList = new ArrayList<>();
-
-        for (CurriculumDTO curriculumDTO : curriculumDTOS) {
-            Curriculum curriculum = curriculumDTO.toEntity();
-            curriculum.setCourse(course);
-            Curriculum savedCurriculum = curriculumRepository.save(curriculum);
-            curriculumDTOList.add(CurriculumDTO.fromEntity(savedCurriculum));
-        }
-
-        return curriculumDTOList;
+        return curriculumDTOs.stream()
+                .map(curriculumDTO -> {
+                    Curriculum curriculum = curriculumDTO.toEntity();
+                    curriculum.setCourse(course);
+                    return curriculumRepository.save(curriculum);
+                })
+                .map(CurriculumDTO::fromEntity)
+                .collect(Collectors.toList());
     }
-
     @Override
     public CurriculumDTO updateCurriculum(CurriculumDTO curriculumDTO) {
         Curriculum curriculum = curriculumRepository.findById(curriculumDTO.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Curriculum", "id", curriculumDTO.getId()));
 
         curriculum.setTitle(curriculumDTO.getTitle());
-        curriculum.setVideoUrl(curriculumDTO.getVideoUrl());
+        curriculum.setYtVideoUrl(curriculumDTO.getYtVideoUrl());
 
         Curriculum updatedCurriculum = curriculumRepository.save(curriculum);
 

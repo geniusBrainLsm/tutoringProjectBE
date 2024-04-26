@@ -14,7 +14,7 @@ public class Curriculum {
 
     private String title;
 
-    private String videoUrl;
+    private String YtVideoUrl;
 
     @ManyToOne
     @JoinColumn(name="course_id")

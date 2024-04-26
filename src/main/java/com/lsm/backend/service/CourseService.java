@@ -9,13 +9,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CourseService {
-    CourseDTO createaCourse(CourseDTO courseDTO, List<CurriculumDTO> curriculumDTOS);
+    CourseDTO createaCourse(CourseDTO courseDTO);
 
     Optional<CourseDTO> getCourse(Long id);
     Page<CourseDTO> getAllCourses(Pageable pageable);
     void deleteCourse(Long id);
     CourseDTO updateCourse(CourseDTO courseDTO);
-
-
 
 }

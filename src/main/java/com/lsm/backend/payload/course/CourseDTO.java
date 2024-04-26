@@ -1,9 +1,7 @@
 package com.lsm.backend.payload.course;
 import com.lsm.backend.model.Course;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +9,8 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class CourseDTO {
     private Long id;
     private String title;
@@ -21,44 +21,35 @@ public class CourseDTO {
     private List<CourseUpdateHistoryDTO> updateHistories = new ArrayList<>();
 
 
-
-//    public CourseDTO(Course course) {
-//        this.id = course.getId();
-//        this.title = course.getTitle();
-//        this.thumbnailUrl = course.getThumbnailUrl();
-//        this.instructorName = course.getInstructorName();
-//        this.description = course.getDescription();
-//        this.curricula = course.getCurricula().stream()
-//                .map(CurriculumDTO::new)
-//                .collect(Collectors.toList());
-////        this.updateHistories = course.getUpdateHistories().stream()
-////                .map(CourseUpdateHistoryDTO::new)
-////                .collect(Collectors.toList());
-//    }
-
     public Course toEntity() {
-        Course course = new Course();
-        course.setId(this.id);
-        course.setTitle(this.title);
-        course.setThumbnailUrl(this.thumbnailUrl);
-        course.setInstructorName(this.instructorName);
-        course.setDescription(this.description);
-        course.setCurricula(this.curricula.stream()
-                .map(CurriculumDTO::toEntity)
-                .collect(Collectors.toList()));
-        course.setUpdateHistories(this.updateHistories.stream()
-                .map(CourseUpdateHistoryDTO::toEntity)
-                .collect(Collectors.toList()));
-        return course;
+        return Course.builder()
+                .id(id)
+                .title(title)
+                .thumbnailUrl(thumbnailUrl)
+                .instructorName(instructorName)
+                .description(description)
+                .curricula(curricula.stream()
+                        .map(CurriculumDTO::toEntity)
+                        .collect(Collectors.toList()))
+                .updateHistories(updateHistories != null ? updateHistories.stream()
+                        .map(CourseUpdateHistoryDTO::toEntity)
+                        .collect(Collectors.toList()) : new ArrayList<>())
+                .build();
     }
 
-    public static CourseDTO fromEntity(Course course){
-        CourseDTO courseDTO = new CourseDTO();
-        courseDTO.setId(course.getId());
-        courseDTO.setTitle(course.getTitle());
-        courseDTO.setThumbnailUrl(course.getThumbnailUrl());
-        courseDTO.setInstructorName(course.getInstructorName());
-        courseDTO.setDescription(course.getDescription());
-        return courseDTO;
+    public static CourseDTO fromEntity(Course course) {
+        return CourseDTO.builder()
+                .id(course.getId())
+                .title(course.getTitle())
+                .thumbnailUrl(course.getThumbnailUrl())
+                .instructorName(course.getInstructorName())
+                .description(course.getDescription())
+                .curricula(course.getCurricula().stream()
+                        .map(CurriculumDTO::fromEntity)
+                        .collect(Collectors.toList()))
+                .updateHistories(course.getUpdateHistories() != null ? course.getUpdateHistories().stream()
+                        .map(CourseUpdateHistoryDTO::fromEntity)
+                        .collect(Collectors.toList()) : new ArrayList<>())
+                .build();
     }
 }

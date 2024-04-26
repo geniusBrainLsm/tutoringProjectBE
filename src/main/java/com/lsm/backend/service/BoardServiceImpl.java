@@ -41,11 +41,9 @@ public class BoardServiceImpl implements BoardService{
                 })
                 .collect(Collectors.toList());
         //댓글수세기
-
         Board board = boardDTO.toEntity();
 
         board.setTag(tags); // 저장된 또는 기존의 Tag 엔티티 설정
-
 
         // Board 엔티티 저장
         board = boardRepository.save(board);

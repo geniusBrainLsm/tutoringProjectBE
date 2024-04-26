@@ -22,8 +22,8 @@ public class CourseController {
     private final CourseServiceImpl courseService;
     private final CurriculumRepository curriculumRepository;
     @PostMapping
-    public ResponseEntity<?> createCourse(CourseDTO courseDTO,List<CurriculumDTO> curriculumDTOS){
-        CourseDTO createdDTO = courseService.createaCourse(courseDTO, curriculumDTOS);
+    public ResponseEntity<?> createCourse(@RequestBody CourseDTO courseDTO){
+        CourseDTO createdDTO = courseService.createaCourse(courseDTO);
         return ResponseEntity.status(201).body(createdDTO);
     }
     @GetMapping("/{id}")
