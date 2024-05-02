@@ -26,8 +26,7 @@ public class WebSocketEventListener {
 //    @EventListener
 //    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
 //        logger.info("User Disconnected : ");
-//
-//        ChatMessageDTO chatMessage = new ChatMessageDTO();
+         ChatMessageDTO chatMessage = new ChatMessageDTO();
 //        chatMessage.setType(ChatMessageDTO.MessageType.LEAVE);
 //
 //        messagingTemplate.convertAndSend("/topic/public", chatMessage);

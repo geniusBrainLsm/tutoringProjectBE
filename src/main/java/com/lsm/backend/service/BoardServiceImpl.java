@@ -90,8 +90,10 @@ public class BoardServiceImpl implements BoardService{
         try{
             Board board = boardRepository.findById(id)
                     .orElseThrow(()-> new Exception("없어용"));
-            board.setViewCount(board.getViewCount()+1);
-            return Optional.of(BoardDTO.fromEntity(board));
+            long currentViewCount = board.getViewCount();
+            board.setViewCount(currentViewCount + 1L);
+            Board updatedBoard = boardRepository.save(board); //조회수 db에저장해야됌
+            return Optional.of(BoardDTO.fromEntity(updatedBoard));
 
         } catch (Exception e){
             return Optional.empty();
