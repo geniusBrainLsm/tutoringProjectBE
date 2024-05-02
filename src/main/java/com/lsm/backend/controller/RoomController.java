@@ -1,53 +1,47 @@
 package com.lsm.backend.controller;
 
-import com.lsm.backend.payload.RoomDTO;
-import com.lsm.backend.repository.UserRepository;
-import com.lsm.backend.service.RoomServiceImpl;
+import com.lsm.backend.model.Coordinate;
+import com.lsm.backend.model.Drawing;
+import com.lsm.backend.payload.DrawingLineDTO;
+import com.lsm.backend.repository.DrawingRepository;
+import com.lsm.backend.service.DrawingService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/room")
 @RequiredArgsConstructor
 public class RoomController {
-    private final RoomServiceImpl roomService;
-    private final UserRepository userRepository;
+    private final DrawingRepository drawingRepository;
+    private final DrawingService drawingService;
 
+//    @MessageMapping("/rooms/{roomId}/chat")
+//    @SendTo("/topic/rooms/{roomId}/chat")
+//    public ChatMessage handleChatMessage(@DestinationVariable String roomId, ChatMessage chatMessage) {
+//        // 채팅 메시지 처리 로직 추가 (예: 데이터베이스에 저장)
+//        return chatMessage;
+//    }
 
+    @MessageMapping("/rooms/{roomId}/drawings")
+    @SendTo("/topic/rooms/{roomId}/drawings")
+    public Coordinate handleDrawingLine(@DestinationVariable String roomId, DrawingLineDTO drawingLineDTO) {
+        // 그리기 작업 처리 로직 추가
+        Coordinate coordinate = new Coordinate();
+        coordinate.setX0(drawingLineDTO.getX0());
+        coordinate.setY0(drawingLineDTO.getY0());
+        coordinate.setX1(drawingLineDTO.getX1());
+        coordinate.setY1(drawingLineDTO.getY1());
+        coordinate.setColor(drawingLineDTO.getColor());
+        coordinate.setLineWidth(drawingLineDTO.getLineWidth());
+        coordinate.setUsername(drawingLineDTO.getUsername());
 
-    @PostMapping
-    public ResponseEntity<?> createRoom(@RequestBody RoomDTO roomDTO){
-        RoomDTO createdDTO = roomService.createRoom(roomDTO);
-        return ResponseEntity.status(201).body(createdDTO);
+        Drawing drawing = drawingService.saveDrawingLine(roomId, coordinate);
+        coordinate.setDrawing(drawing);
+
+        return coordinate;
     }
 
 
-    @GetMapping
-    public ResponseEntity<List<RoomDTO>> getAllRooms(){
-        List<RoomDTO> rooms = roomService.getAllRooms();
-        return ResponseEntity.ok(rooms);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getRoom(@PathVariable Long id){
-        Optional<RoomDTO> room = roomService.getRoom(id);
-        if (room.isPresent()) {
-            return ResponseEntity.ok(room);
-        } else {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    //삭제의 경우 return값이 없다.
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteRoom(@PathVariable Long id){
-        roomService.deleteRoom(id);
-        return ResponseEntity.noContent().build();
-        //build는 body에 보낼거없을때쓰는 메서드
-    }
 }
