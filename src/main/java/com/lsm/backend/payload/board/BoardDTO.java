@@ -33,7 +33,6 @@ public class BoardDTO {
     private List<CommentResponseDTO> comment;
 
     private Long likeCount;
- ㅁ
     private Long viewCount;
     @Builder.Default
     private Long commentsCount = 0L;
