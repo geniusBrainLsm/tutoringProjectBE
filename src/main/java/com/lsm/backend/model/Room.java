@@ -1,7 +1,6 @@
 package com.lsm.backend.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -11,21 +10,25 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-@Data
 @Entity
-@Table(name = "room")
+@Table(name="room")
+@Getter
+@Setter
+
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-    private String description;
-    private String address;
+    @Column(name="title")
+    private String title;
 
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
-    private List<Participant> participants;
+    @Column(name="owner", nullable = true)
+    private String owner;
 
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
-    private List<Drawing> drawings;
+
+    @CreationTimestamp
+    @Column(name="created_date",nullable = true)
+    private LocalDateTime createdDate;
+
 }

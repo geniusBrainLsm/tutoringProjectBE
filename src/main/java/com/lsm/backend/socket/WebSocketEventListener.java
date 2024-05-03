@@ -1,6 +1,6 @@
 package com.lsm.backend.socket;
 
-
+import com.lsm.backend.payload.ChatMessageDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,4 +22,13 @@ public class WebSocketEventListener {
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
         logger.info("Received a new web socket connection");
     }
+
+//    @EventListener
+//    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
+//        logger.info("User Disconnected : ");
+         ChatMessageDTO chatMessage = new ChatMessageDTO();
+//        chatMessage.setType(ChatMessageDTO.MessageType.LEAVE);
+//
+//        messagingTemplate.convertAndSend("/topic/public", chatMessage);
+//    }
 }
