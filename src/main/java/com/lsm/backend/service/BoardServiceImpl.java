@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -43,7 +44,7 @@ public class BoardServiceImpl implements BoardService{
         //댓글수세기
         Board board = boardDTO.toEntity();
 
-        board.setTag(tags); // 저장된 또는 기존의 Tag 엔티티 설정
+        board.setTag(tags);
 
         // Board 엔티티 저장
         board = boardRepository.save(board);
@@ -57,30 +58,39 @@ public class BoardServiceImpl implements BoardService{
     public BoardDTO updatePost(BoardDTO boardDTO) {
         Board board = boardRepository.findById(boardDTO.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Board", "id", boardDTO.getId()));
+//        240507 태그로직 변경. 태그 업데이트시 기존 태그 삭제되는 문제 해결.
 
-        // 태그 가져오기, 중복 체크 포함
-        List<Tag> tags = boardDTO.getTag().stream()
-                .map(tagDTO -> {
-                    return tagRepository.findByContents(tagDTO.getContents())
-                            .orElseGet(() -> {
-                                Tag tag = Tag.builder()
-                                        .contents(tagDTO.getContents())
-                                        .build();
-                                return tagRepository.save(tag);
-                            });
-                })
-                .collect(Collectors.toList());
+        List<Tag> existingTags = new ArrayList<>(board.getTag());
+        List<Tag> newTags = Optional.ofNullable(boardDTO.getTag()).orElseGet(Collections::emptyList)
+                .stream()
+                .map(tagDTO -> tagRepository.findByContents(tagDTO.getContents())
+                        .orElseGet(() -> {
+                            Tag tag = Tag.builder()
+                                    .contents(tagDTO.getContents())
+                                    .build();
+                            return tagRepository.save(tag);
+                        }))
+                .toList();
 
-        board.setTag(tags);
+        List<Tag> tagsToRemove = existingTags.stream()
+                .filter(tag -> newTags.stream().noneMatch
+                        (newTag -> tag.getContents() != null && newTag.getContents() !=
+                                null && tag.getContents().equals(newTag.getContents())))
+                .toList();
+
+        existingTags.removeAll(tagsToRemove);
+
+        existingTags.addAll(newTags);
+
+        board.setTag(existingTags);
         board.setTitle(boardDTO.getTitle());
         board.setContents(boardDTO.getContents());
+        board.setWriter(boardDTO.getWriter());
 
-        // Board 엔티티 저장
         board = boardRepository.save(board);
 
-        // 댓글 수 업데이트
-        Long commentsCount = boardRepository.countCommentsById(board.getId());
-        board.setCommentsCount(commentsCount);
+        board.setCommentsCount(boardDTO.getCommentsCount());
+
         return BoardDTO.fromEntity(board);
     }
 
