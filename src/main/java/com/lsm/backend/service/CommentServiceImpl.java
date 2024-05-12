@@ -1,5 +1,6 @@
 package com.lsm.backend.service;
 
+import com.lsm.backend.exception.ForbiddenException;
 import com.lsm.backend.exception.ResourceNotFoundException;
 import com.lsm.backend.model.Board;
 import com.lsm.backend.model.Comment;
@@ -24,7 +25,7 @@ public class  CommentServiceImpl implements CommentService{
     @Override
     @Transactional
     public CommentResponseDTO createComment(CommentRequestDTO commentDTO, UserPrincipal userPrincipal, Long id) {
-
+        System.out.println(userPrincipal);
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Board", "id", id));
 
@@ -34,7 +35,12 @@ public class  CommentServiceImpl implements CommentService{
         Comment comment = commentDTO.toEntity();
         comment.setBoard(board);
         comment.setUser(user);
-        //comment.setParent(commentDTO.getParent());
+        //이거 대댓글 Long인데 Comment타입으로 변환하는거
+        if (commentDTO.getParentId() != null) {
+            Comment parentComment = commentRepository.findById(commentDTO.getParentId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentDTO.getParentId()));
+            comment.setParent(parentComment);
+        }
 
         comment = commentRepository.save(comment);
 
@@ -43,11 +49,13 @@ public class  CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public CommentDTO updateComment(CommentDTO commentDTO, Long id) {
+    public CommentDTO updateComment(CommentDTO commentDTO, Long id, UserPrincipal userPrincipal) {
 
         Comment comment = commentRepository.findById(commentDTO.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentDTO.getId()));
-
+        if (!comment.getUser().getId().equals(userPrincipal.getId())) {
+            throw new ForbiddenException("본인 댓글만 수정 할 수있습니다.");
+        }
         comment.setContent(commentDTO.getContent());
 
         comment = commentRepository.save(comment);
@@ -83,7 +91,12 @@ public class  CommentServiceImpl implements CommentService{
 //    }
 
     @Override
-    public void deleteComment(Long id) {
+    public void deleteComment(Long id, UserPrincipal userPrincipal) {
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment", "id", id));
+        if (!comment.getUser().getId().equals(userPrincipal.getId())) {
+            throw new ForbiddenException("본인 댓글만 삭제 할 수있습니다.");
+        }
         commentRepository.deleteById(id);
     }
 }

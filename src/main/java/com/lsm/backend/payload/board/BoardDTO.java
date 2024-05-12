@@ -73,6 +73,7 @@ public class BoardDTO {
             commentsCount = (long) board.getComment().size();
         }
 
+
         //이건 댓글수는 Entity에 없으니까 이렇게 불러와서 빌드함
         List<TagDTO> tagDTOs = Optional.ofNullable(board.getTag())
                 .orElseGet(Collections::emptyList)
@@ -90,7 +91,7 @@ public class BoardDTO {
                         .id(comment.getId())
                         .content(comment.getContent())
                         .boardId(comment.getBoard().getId())
-                        .parentId(comment.getParent().getId() != null ? comment.getParent().getId() : null)
+                        .parentId(comment.getParent() != null ? comment.getParent().getId() : null)
                         .userName(comment.getUser().getName())
                         .build())
                 .collect(Collectors.toList());

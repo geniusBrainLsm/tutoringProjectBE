@@ -16,7 +16,7 @@ public class CommentRequestDTO {
     private Long id;
     private Board board;
     private String content;
-    private Comment parent;
+    private Long parentId;
     private User user;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
@@ -28,7 +28,7 @@ public class CommentRequestDTO {
                 .content(content)
                 .user(user)
                 .board(board)
-                .parent(parent)
+                //.parent(parent)
                 .build();
     }
 }

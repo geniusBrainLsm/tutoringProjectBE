@@ -19,15 +19,15 @@ public class CommentController {
         //commentService.createComment(commentDTO, userPrincipal, id);
         return ResponseEntity.status(201).body(commentService.createComment(commentDTO, userPrincipal, id));
     }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteComment(@PathVariable Long id){
-        commentService.deleteComment(id);
+    @DeleteMapping("comment/{id}")
+    public ResponseEntity<?> deleteComment(@PathVariable Long id, @CurrentUser UserPrincipal userPrincipal){
+        commentService.deleteComment(id, userPrincipal);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping
-    public ResponseEntity<?> updateComment(@RequestBody CommentDTO commentDTO, @PathVariable Long id){
-        CommentDTO createdDTO = commentService.updateComment(commentDTO, id);
+    @PutMapping("/comment/{id}")
+    public ResponseEntity<?> updateComment(@RequestBody CommentDTO commentDTO, @PathVariable Long id,@CurrentUser UserPrincipal userPrincipal){
+        CommentDTO createdDTO = commentService.updateComment(commentDTO, id, userPrincipal);
         return ResponseEntity.status(201).body(createdDTO);
     }
 
