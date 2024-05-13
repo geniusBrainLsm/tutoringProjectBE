@@ -9,7 +9,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -18,7 +20,9 @@ import java.util.Optional;
 public class BoardController {
     private final BoardServiceImpl boardService;
     @PostMapping
-    public ResponseEntity<?> createPost(@RequestBody BoardDTO boardDTO){
+    public ResponseEntity<?> createPost(@RequestBody BoardDTO boardDTO, @RequestPart List<MultipartFile> files){
+
+        boardDTO.setImage(files);
         BoardDTO createdDTO = boardService.createPost(boardDTO);
         return ResponseEntity.status(201).body(createdDTO);
     }

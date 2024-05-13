@@ -33,10 +33,10 @@ public class CourseServiceImpl implements CourseService{
     private final CourseUpdateHistoryRepository courseUpdateHistoryRepository;
     @Override
     public CourseDTO createaCourse(CourseDTO courseDTO) {
-        // 1. 강의 엔티티 생성 및 저장
+        //강의 엔티티 생성
         Course course = courseRepository.save(courseDTO.toEntity());
 
-        // 2. 커리큘럼 엔티티 생성 및 저장
+        //커리큘럼 엔티티 생성 및 저장
         List<Curriculum> curricula = courseDTO.getCurricula().stream()
                 .map(curriculumDTO -> {
                     Curriculum curriculum = curriculumDTO.toEntity();
@@ -45,7 +45,7 @@ public class CourseServiceImpl implements CourseService{
                 })
                 .collect(Collectors.toList());
 
-        // 3. 업데이트 이력 엔티티 생성 및 저장 (없을 경우 건너뛰기)
+        //업데이트 이력 엔티티 생성 및 저장
         List<CourseUpdateHistory> updateHistories = Optional.ofNullable(courseDTO.getUpdateHistories())
                 .orElseGet(Collections::emptyList)
                 .stream()
@@ -56,11 +56,11 @@ public class CourseServiceImpl implements CourseService{
                 })
                 .collect(Collectors.toList());
 
-        // 4. 강의 엔티티에 커리큘럼과 업데이트 이력 설정
+        // 강의 엔티티에 커리큘럼과 업데이트 이력 설정
         course.setCurricula(curricula);
         course.setUpdateHistories(updateHistories);
 
-        // 5. 강의 DTO 생성 및 반환
+        //강의 DTO
         return CourseDTO.fromEntity(course);
     }
 

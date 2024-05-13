@@ -35,6 +35,10 @@ public class Board {
     @Nullable
     private List<Tag> tag;
 
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Nullable
+    private List<Image> image;
+
     private Long likeCount;
 
     private Long viewCount;

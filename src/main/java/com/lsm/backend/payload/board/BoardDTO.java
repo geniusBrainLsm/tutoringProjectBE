@@ -1,9 +1,11 @@
 package com.lsm.backend.payload.board;
 
 import com.lsm.backend.model.Board;
+import com.lsm.backend.model.Image;
 import com.lsm.backend.model.Tag;
 import jakarta.persistence.Column;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -29,6 +31,8 @@ public class BoardDTO {
     private String contents;
 
     private List<TagDTO> tag;
+
+    private List<MultipartFile> image;
 
     private List<CommentResponseDTO> comment;
 
@@ -63,7 +67,7 @@ public class BoardDTO {
                 .commentsCount(commentsCount)
                 .build();
     }
-
+//이미지 변환없음
     public static BoardDTO fromEntity(Board board) {
         Long commentsCount;
         if(board.getComment() == null){
@@ -95,6 +99,17 @@ public class BoardDTO {
                         .userName(comment.getUser().getName())
                         .build())
                 .collect(Collectors.toList());
+
+//        List<ImageDTO> imageDTOs = Optional.ofNullable(board.getImage())
+//                .orElseGet(Collections::emptyList)
+//                .stream()
+//                .map(image -> ImageDTO.builder()
+//                        .id(image.getId())
+//                        .fileName(image.getFileName())
+//                        .filePath(image.getFilePath())
+//                        .type(image.getType())
+//                        .build())
+//                .collect(Collectors.toList());
 
         return BoardDTO.builder()
                 .id(board.getId())

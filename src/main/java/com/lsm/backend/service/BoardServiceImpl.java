@@ -2,6 +2,7 @@ package com.lsm.backend.service;
 
 import com.lsm.backend.exception.ResourceNotFoundException;
 import com.lsm.backend.model.Board;
+import com.lsm.backend.model.Image;
 import com.lsm.backend.model.Tag;
 import com.lsm.backend.payload.board.BoardDTO;
 import com.lsm.backend.repository.BoardRepository;
@@ -24,13 +25,14 @@ import java.util.stream.Collectors;
 public class BoardServiceImpl implements BoardService{
     private final BoardRepository boardRepository;
     private final TagRepository tagRepository;
+    private final ImageServiceImpl imageService;
     @Override
     public BoardDTO createPost(BoardDTO boardDTO) {
         //태그가져오기. 중복체크포함해서
         List<Tag> tags = Optional.ofNullable(boardDTO.getTag()).orElseGet(Collections::emptyList)
                 .stream()
                 .map(tagDTO -> {
-                    // 데이터베이스에서 태그 검색
+                    //태그 검색하고 없으면? ->
                     return tagRepository.findByContents(tagDTO.getContents())
                             .orElseGet(() -> {
                                 // 태그가 존재하지 않는 경우 새로 저장
@@ -46,7 +48,27 @@ public class BoardServiceImpl implements BoardService{
 
         board.setTag(tags);
 
-        // Board 엔티티 저장
+
+//        List<Image> images = Optional.ofNullable(boardDTO.getImage())
+//                .orElseGet(Collections::emptyList)
+//                .stream()
+//                .map(imageDTO -> {
+//                    Image image = new Image();
+//                    image.setFileName(imageDTO.getFileName());
+//                    image.setFilePath(imageDTO.getFilePath());
+//                    image.setType(imageDTO.getType());
+//                    //image.setBoard(board); // 이미지와 게시글 연결은? 안해도될듯
+//                    return image;
+//                })
+//                .collect(Collectors.toList());
+//        board.setImage(images);
+//        // Board 엔티티 저장
+//
+//        imageService.uploadImage(images);
+
+        List<Image> images = imageService.uploadImage(boardDTO.getImage());
+        board.setImage(images);
+
         board = boardRepository.save(board);
 
         Long commentsCount = boardRepository.countCommentsById(board.getId());
