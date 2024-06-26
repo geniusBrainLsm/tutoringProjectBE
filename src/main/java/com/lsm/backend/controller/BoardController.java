@@ -20,12 +20,13 @@ import java.util.Optional;
 @RequestMapping("/api/board")
 public class BoardController {
     private final BoardServiceImpl boardService;
-
+//멀티파트파일이미지는 json 응답에서 필요가 없으니까 이름을 이렇게 지었다...
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> createPost(@RequestPart("boardDTO") BoardDTO boardDTO,
-                                        @RequestPart("files") List<MultipartFile> files) {
-
-        boardDTO.setImage(files);
+                                        @RequestPart(value = "files", required = false) List<MultipartFile> files) {
+        System.out.println("Received boardDTO: " + boardDTO);
+        System.out.println("Received files: " + files);
+        boardDTO.setMultipartFileImage(files);
         BoardDTO createdDTO = boardService.createPost(boardDTO);
         return ResponseEntity.status(201).body(createdDTO);
     }

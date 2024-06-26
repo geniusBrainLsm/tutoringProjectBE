@@ -66,7 +66,7 @@ public class BoardServiceImpl implements BoardService{
 //
 //        imageService.uploadImage(images);
 
-        List<Image> images = imageService.uploadImage(boardDTO.getImage());
+        List<Image> images = imageService.uploadImage(boardDTO.getMultipartFileImage());
         board.setImage(images);
 
         board = boardRepository.save(board);

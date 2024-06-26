@@ -1,5 +1,6 @@
 package com.lsm.backend.payload.board;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lsm.backend.model.Board;
 import com.lsm.backend.model.Image;
 import com.lsm.backend.model.Tag;
@@ -8,6 +9,7 @@ import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -21,34 +23,25 @@ import java.util.stream.Collectors;
 public class BoardDTO {
 
     private Long id;
-
     private String boardType;
-
     private String title;
-
     private String writer;
-
     private String contents;
-
     private List<TagDTO> tag;
-
-    private List<MultipartFile> image;
-
+    @JsonIgnore
+    private List<MultipartFile> MultipartFileImage;
     private List<CommentResponseDTO> comment;
-
+    private List<ImageDTO> image;
     private Long likeCount;
     private Long viewCount;
     @Builder.Default
     private Long commentsCount = 0L;
-
     @Column
     private LocalDateTime createdAt;
-
     @Column
     private LocalDateTime modifiedAt;
 
     public Board toEntity() {
-
         return Board.builder()
                 .title(title)
                 .writer(writer)
@@ -56,7 +49,6 @@ public class BoardDTO {
                 .contents(contents)
                 .likeCount(likeCount)
                 .viewCount(viewCount)
-
                 .tag(Optional.ofNullable(tag).orElseGet(Collections::emptyList)
                         .stream()
                         .map(tagDTO -> Tag.builder()
@@ -64,21 +56,25 @@ public class BoardDTO {
                                 .contents(tagDTO.getContents())
                                 .build())
                         .collect(Collectors.toList()))
+                .image(Optional.ofNullable(image).orElseGet(Collections::emptyList)
+                        .stream()
+                        .map(imageDTO -> Image.builder()
+                                .id(imageDTO.getId())
+                                .fileName(imageDTO.getFileName())
+                                .type(imageDTO.getType())
+                                .filePath(imageDTO.getFilePath())
+                                .build())
+                        .collect(Collectors.toList()))
                 .commentsCount(commentsCount)
                 .build();
     }
-//이미지 변환없음
+
     public static BoardDTO fromEntity(Board board) {
-        Long commentsCount;
-        if(board.getComment() == null){
-            commentsCount = 0L;
-        }
-        else{
-            commentsCount = (long) board.getComment().size();
-        }
+        Long commentsCount = Optional.ofNullable(board.getComment())
+                .map(List::size)
+                .map(Long::valueOf)
+                .orElse(0L);
 
-
-        //이건 댓글수는 Entity에 없으니까 이렇게 불러와서 빌드함
         List<TagDTO> tagDTOs = Optional.ofNullable(board.getTag())
                 .orElseGet(Collections::emptyList)
                 .stream()
@@ -100,16 +96,16 @@ public class BoardDTO {
                         .build())
                 .collect(Collectors.toList());
 
-//        List<ImageDTO> imageDTOs = Optional.ofNullable(board.getImage())
-//                .orElseGet(Collections::emptyList)
-//                .stream()
-//                .map(image -> ImageDTO.builder()
-//                        .id(image.getId())
-//                        .fileName(image.getFileName())
-//                        .filePath(image.getFilePath())
-//                        .type(image.getType())
-//                        .build())
-//                .collect(Collectors.toList());
+        List<ImageDTO> imageDTOs = Optional.ofNullable(board.getImage())
+                .orElseGet(Collections::emptyList)
+                .stream()
+                .map(image -> ImageDTO.builder()
+                        .id(image.getId())
+                        .fileName(image.getFileName())
+                        .type(image.getType())
+                        .filePath(image.getFilePath())
+                        .build())
+                .collect(Collectors.toList());
 
         return BoardDTO.builder()
                 .id(board.getId())
@@ -123,8 +119,9 @@ public class BoardDTO {
                 .createdAt(board.getCreatedAt())
                 .modifiedAt(board.getModifiedAt())
                 .tag(tagDTOs)
-
                 .comment(commentResponseDTOs)
+                .image(imageDTOs)
                 .build();
     }
 }
+
