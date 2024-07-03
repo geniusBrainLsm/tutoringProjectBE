@@ -9,8 +9,8 @@ import java.util.Optional;
 
 public interface BoardService {
     BoardDTO createPost(BoardDTO boardDTO);
-    BoardDTO updatePost(BoardDTO boardDTO);
-
+    //BoardDTO updatePost(BoardDTO boardDTO);
+    BoardDTO updatePost(Long boardId, BoardDTO boardDTO);
     Optional<BoardDTO> getPost(Long id);
     Page<BoardDTO> getSearchPost(String boardType, String keyword, String sortBy ,Pageable pageable);
     Page<BoardDTO> getAllPost(Pageable pageable);

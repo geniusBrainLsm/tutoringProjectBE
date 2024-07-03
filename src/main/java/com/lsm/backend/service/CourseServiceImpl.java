@@ -1,13 +1,12 @@
 package com.lsm.backend.service;
 
 import com.lsm.backend.exception.ResourceNotFoundException;
-import com.lsm.backend.model.Course;
-import com.lsm.backend.model.CourseUpdateHistory;
-import com.lsm.backend.model.Curriculum;
-import com.lsm.backend.model.Tag;
+import com.lsm.backend.model.*;
 import com.lsm.backend.payload.course.CourseDTO;
+import com.lsm.backend.payload.course.CourseFieldDTO;
 import com.lsm.backend.payload.course.CourseUpdateHistoryDTO;
 import com.lsm.backend.payload.course.CurriculumDTO;
+import com.lsm.backend.repository.CourseFieldRepository;
 import com.lsm.backend.repository.CourseRepository;
 
 import com.lsm.backend.repository.CourseUpdateHistoryRepository;
@@ -31,10 +30,25 @@ public class CourseServiceImpl implements CourseService{
     private final CourseRepository courseRepository;
     private final CurriculumRepository curriculumRepository;
     private final CourseUpdateHistoryRepository courseUpdateHistoryRepository;
+    private final CourseFieldRepository courseFieldRepository;
     @Override
     public CourseDTO createaCourse(CourseDTO courseDTO) {
-        //강의 엔티티 생성
         Course course = courseRepository.save(courseDTO.toEntity());
+
+        List<CourseField> fields = Optional.ofNullable(courseDTO.getField()).orElseGet(Collections::emptyList)
+                .stream()
+                .map(courseFieldDTO -> {
+                    // 레포지토리에서 필드 내용으로 조회
+                    return courseFieldRepository.findByContents(courseFieldDTO.getContents())
+                            .orElseGet(() -> {
+                                // 존재하지 않는 경우 새로운 CourseField 객체 생성 및 저장
+                                CourseField courseField = CourseField.builder()
+                                        .contents(courseFieldDTO.getContents())
+                                        .build();
+                                return courseFieldRepository.save(courseField);
+                            });
+                })
+                .toList();
 
         //커리큘럼 엔티티 생성 및 저장
         List<Curriculum> curricula = courseDTO.getCurricula().stream()

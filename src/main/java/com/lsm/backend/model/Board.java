@@ -3,6 +3,7 @@ package com.lsm.backend.model;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
+import com.lsm.backend.model.Image;
 
 import java.time.LocalDateTime;
 import java.util.List;

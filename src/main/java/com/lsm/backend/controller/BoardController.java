@@ -65,9 +65,19 @@ public class BoardController {
         return ResponseEntity.ok(posts);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> editPost(@PathVariable Long id, @RequestBody BoardDTO boardDTO) {
-        BoardDTO createdDTO = boardService.updatePost(boardDTO);
-        return ResponseEntity.status(201).body(createdDTO);
+    @PutMapping(value = "/{boardId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> updatePost(@PathVariable Long boardId,
+                                        @RequestPart("boardDTO") BoardDTO boardDTO,
+                                        @RequestPart(value = "files", required = false) List<MultipartFile> files) {
+        System.out.println("Updating boardId: " + boardId);
+        System.out.println("Received boardDTO: " + boardDTO);
+        System.out.println("Received files: " + files);
+
+        boardDTO.setMultipartFileImage(files);
+
+        BoardDTO updatedDTO = boardService.updatePost(boardId, boardDTO);
+
+        return ResponseEntity.ok(updatedDTO);
     }
+
 }

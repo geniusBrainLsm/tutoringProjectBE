@@ -1,6 +1,5 @@
 package com.lsm.backend.model;
-import com.lsm.backend.model.Curriculum;
-import com.lsm.backend.model.CourseUpdateHistory;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,24 +18,34 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToMany
+    @JoinTable(
+            name = "course_field_map",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "field_id")
+    )
+    private List<CourseField> fields = new ArrayList<>();
+
     private String title;
-    //썸네일이미지
     private String thumbnailUrl;
     private String instructorName;
     private String description;
-    //강의영상 커리큘럼 영상리스트
+
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private List<Curriculum> curricula = new ArrayList<>();
-    //업데이트내역
+
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private List<CourseUpdateHistory> updateHistories = new ArrayList<>();
 
-    @Column(name = "created_at")
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    private List<Image> images = new ArrayList<>();
 
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Column(name = "modified_at")
     private LocalDateTime modifiedAt;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();

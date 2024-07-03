@@ -14,123 +14,102 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class BoardServiceImpl implements BoardService{
+public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
     private final TagRepository tagRepository;
-    private final ImageServiceImpl imageService;
+    private final ImageService imageService;
+
     @Override
     public BoardDTO createPost(BoardDTO boardDTO) {
-        //태그가져오기. 중복체크포함해서
+        // 태그 가져오기, 중복 체크 포함
         List<Tag> tags = Optional.ofNullable(boardDTO.getTag()).orElseGet(Collections::emptyList)
-                .stream()
-                .map(tagDTO -> {
-                    //태그 검색하고 없으면? ->
-                    return tagRepository.findByContents(tagDTO.getContents())
-                            .orElseGet(() -> {
-                                // 태그가 존재하지 않는 경우 새로 저장
-                                Tag tag = Tag.builder()
-                                        .contents(tagDTO.getContents())
-                                        .build();
-                                return tagRepository.save(tag);
-                            });
-                })
-                .collect(Collectors.toList());
-        //댓글수세기
-        Board board = boardDTO.toEntity();
-
-        board.setTag(tags);
-
-
-//        List<Image> images = Optional.ofNullable(boardDTO.getImage())
-//                .orElseGet(Collections::emptyList)
-//                .stream()
-//                .map(imageDTO -> {
-//                    Image image = new Image();
-//                    image.setFileName(imageDTO.getFileName());
-//                    image.setFilePath(imageDTO.getFilePath());
-//                    image.setType(imageDTO.getType());
-//                    //image.setBoard(board); // 이미지와 게시글 연결은? 안해도될듯
-//                    return image;
-//                })
-//                .collect(Collectors.toList());
-//        board.setImage(images);
-//        // Board 엔티티 저장
-//
-//        imageService.uploadImage(images);
-
-        List<Image> images = imageService.uploadImage(boardDTO.getMultipartFileImage());
-        board.setImage(images);
-
-        board = boardRepository.save(board);
-
-        Long commentsCount = boardRepository.countCommentsById(board.getId());
-
-        board.setCommentsCount(commentsCount);
-        return BoardDTO.fromEntity(board);
-    }
-    @Override
-    public BoardDTO updatePost(BoardDTO boardDTO) {
-        Board board = boardRepository.findById(boardDTO.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Board", "id", boardDTO.getId()));
-//        240507 태그로직 변경. 태그 업데이트시 기존 태그 삭제되는 문제 해결.
-
-        List<Tag> existingTags = new ArrayList<>(board.getTag());
-        List<Tag> newTags = Optional.ofNullable(boardDTO.getTag()).orElseGet(Collections::emptyList)
                 .stream()
                 .map(tagDTO -> tagRepository.findByContents(tagDTO.getContents())
                         .orElseGet(() -> {
-                            Tag tag = Tag.builder()
-                                    .contents(tagDTO.getContents())
-                                    .build();
+                            // 태그가 존재하지 않는 경우 새로 저장
+                            Tag tag = Tag.builder().contents(tagDTO.getContents()).build();
                             return tagRepository.save(tag);
                         }))
-                .toList();
+                .collect(Collectors.toList());
 
-        List<Tag> tagsToRemove = existingTags.stream()
-                .filter(tag -> newTags.stream().noneMatch
-                        (newTag -> tag.getContents() != null && newTag.getContents() !=
-                                null && tag.getContents().equals(newTag.getContents())))
-                .toList();
+        // Board 엔티티로 변환 후 태그 설정
+        Board board = boardDTO.toEntity();
+        board.setTag(tags);
 
-        existingTags.removeAll(tagsToRemove);
+        // 이미지 저장 및 설정
+        List<Image> images = imageService.saveImages(boardDTO.getMultipartFileImage(), board.getId());
+        board.setImage(images);
 
-        existingTags.addAll(newTags);
-
-        board.setTag(existingTags);
-        board.setTitle(boardDTO.getTitle());
-        board.setContents(boardDTO.getContents());
-        board.setWriter(boardDTO.getWriter());
-
+        // Board 엔티티 저장
         board = boardRepository.save(board);
 
-        board.setCommentsCount(boardDTO.getCommentsCount());
+        // 댓글 수 세기
+        Long commentsCount = boardRepository.countCommentsById(board.getId());
+        board.setCommentsCount(commentsCount);
 
         return BoardDTO.fromEntity(board);
     }
 
+    @Override
+    public BoardDTO updatePost(Long boardId, BoardDTO boardDTO) {
+        // 기존 보드 찾기
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new ResourceNotFoundException("Board", "id", boardId));
+
+        // 태그 업데이트
+        List<Tag> tags = Optional.ofNullable(boardDTO.getTag()).orElseGet(Collections::emptyList)
+                .stream()
+                .map(tagDTO -> tagRepository.findByContents(tagDTO.getContents())
+                        .orElseGet(() -> {
+                            Tag tag = Tag.builder().contents(tagDTO.getContents()).build();
+                            return tagRepository.save(tag);
+                        }))
+                .collect(Collectors.toList());
+        board.setTag(tags);
+
+        // 이미지 업데이트
+        if (boardDTO.getMultipartFileImage() != null && !boardDTO.getMultipartFileImage().isEmpty()) {
+            List<Image> images = imageService.saveImages(boardDTO.getMultipartFileImage(), board.getId());
+            board.setImage(images);
+        }
+
+        // 다른 필드 업데이트
+        if (boardDTO.getTitle() != null) {
+            board.setTitle(boardDTO.getTitle());
+        }
+        if (boardDTO.getContents() != null) {
+            board.setContents(boardDTO.getContents());
+        }
+
+        // Board 엔티티 저장
+        board = boardRepository.save(board);
+
+        // 댓글 수 업데이트
+        Long commentsCount = boardRepository.countCommentsById(board.getId());
+        board.setCommentsCount(commentsCount);
+
+        return BoardDTO.fromEntity(board);
+    }
 
     @Override
     public Optional<BoardDTO> getPost(Long id) {
-        try{
+        try {
             Board board = boardRepository.findById(id)
-                    .orElseThrow(()-> new Exception("없어용"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Board", "id", id));
             long currentViewCount = board.getViewCount();
             board.setViewCount(currentViewCount + 1L);
-            Board updatedBoard = boardRepository.save(board); //조회수 db에저장해야됌
+            Board updatedBoard = boardRepository.save(board); // 조회수 DB에 저장
             return Optional.of(BoardDTO.fromEntity(updatedBoard));
-
-        } catch (Exception e){
+        } catch (Exception e) {
             return Optional.empty();
         }
     }
+
     @Override
     public Page<BoardDTO> getSearchPost(String boardType, String keyword, String sortBy, Pageable pageable) {
         int page = pageable.getPageNumber() - 1;
@@ -148,8 +127,8 @@ public class BoardServiceImpl implements BoardService{
         Page<Board> boards = boardRepository.findByBoardTypeAndTitleContaining(boardType, keyword, sortedPageable);
 
         return boards.map(BoardDTO::fromEntity);
-
     }
+
     @Override
     public Page<BoardDTO> getAllPost(Pageable pageable) {
         Page<Board> boards = boardRepository.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "id")));

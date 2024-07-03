@@ -1,6 +1,9 @@
 package com.lsm.backend.service;
 
+import com.lsm.backend.model.Course;
 import com.lsm.backend.model.Image;
+import com.lsm.backend.repository.ImageRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,10 +17,13 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-public class ImageServiceImpl {
+@RequiredArgsConstructor
+public class ImageServiceImpl implements ImageService {
     private static final String UPLOAD_DIR = "C:\\Users\\USER\\IdeaProjects\\tutoringProjectBElast\\src\\main\\resources\\Images";
+    private final ImageRepository imageRepository;
 
-    public List<Image> uploadImage(List<MultipartFile> files) {
+    @Override
+    public List<Image> saveImages(List<MultipartFile> files, Long courseId) {
         if (files == null || files.isEmpty()) {
             return Collections.emptyList();
         }
@@ -29,6 +35,8 @@ public class ImageServiceImpl {
                 image.setFileName(file.getOriginalFilename());
                 image.setFilePath(UPLOAD_DIR + File.separator + file.getOriginalFilename());
                 image.setType(file.getContentType());
+                // courseId를 설정하여 이미지와 코스를 연결
+                image.setCourse(Course.builder().id(courseId).build());
                 images.add(image);
 
                 // 파일 저장 경로가 존재하지 않으면 생성
@@ -49,7 +57,7 @@ public class ImageServiceImpl {
                 }
             }
         }
-        return images;
+        // 이미지 엔티티 리스트를 데이터베이스에 저장
+        return imageRepository.saveAll(images);
     }
 }
-

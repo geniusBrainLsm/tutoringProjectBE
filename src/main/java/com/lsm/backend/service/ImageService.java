@@ -8,5 +8,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface ImageService {
-    List<Image> uploadImage(List<MultipartFile> files) throws IOException;
+    //List<Image> uploadImage(List<MultipartFile> files) throws IOException;
+    List<Image> saveImages(List<MultipartFile> files, Long courseId);
+
 }
